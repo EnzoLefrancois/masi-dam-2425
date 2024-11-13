@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'list.dart';
+
+
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
-
-  // Vérification dans la console pour s'assurer que .env a été bien chargé
   runApp(const MyApp());
 }
 
@@ -20,7 +21,8 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Manga Vault'),
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -35,43 +37,73 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  int _selectedIndex = 1; // Variable pour gérer l'index de la page sélectionnée
+  final PageController _pageController = PageController(); // Pour la gestion du swipe
 
-  void _incrementCounter() {
+  // Liste des pages de l'application
+  final List<Widget> _pages = [
+    const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
+    const Center(child: Text("Page 2", style: TextStyle(fontSize: 30))),
+    const MySearchPage(title: 'Page de recherche de la liste des manga',),
+    const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
+  ];
+
+  // Fonction pour changer la page via le BottomNavigationBar
+  void _onItemTapped(int index) {
     setState(() {
-      _counter++;
+      _selectedIndex = index;
+    });
+    _pageController.jumpToPage(index); // Synchroniser avec le swipe
+  }
+
+  // Fonction pour naviguer en swipe
+  void _onPageChanged(int index) {
+    setState(() {
+      _selectedIndex = index;
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
-    // Récupérer la clé API à partir du fichier .env
-    String? _apiKey = dotenv.env['API_KEY'];
-
-    // Vérifier si la clé API existe
-    _apiKey ??= 'Clé API introuvable'; // Valeur par défaut si la clé est introuvable
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            //Text('Clé API: $_apiKey'), // Afficher la clé API
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: _onPageChanged, // Gérer le swipe
+        children: _pages,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped, // Changer de page via le menu
+        selectedItemColor: Colors.blue, // Couleur des icônes sélectionnées
+        unselectedItemColor: Colors.grey, // Couleur des icônes non sélectionnées
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Wishlists',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Bibliothèque',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Recherche',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Options',
+          ),
+        ],
+      ),
+      floatingActionButton: const FloatingActionButton(
+        onPressed: null,
         tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        child: Icon(Icons.document_scanner_rounded),
       ),
     );
   }
