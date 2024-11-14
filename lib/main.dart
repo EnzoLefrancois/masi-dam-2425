@@ -58,22 +58,25 @@ class _MyHomePageState extends State<MyHomePage> {
     // Parser le CSV
     List<List<dynamic>> list = CsvToListConverter().convert(rawData);
 
-    // Trouver l'index de la colonne "title"
+    // Trouver l'index des colonnes "title" et "type"
     final titleIndex = list[0].indexOf('title');
+    final typeIndex = list[0].indexOf('type');
 
-    // Extraire les titres des mangas à partir de la colonne "title"
+    // Extraire les titres des mangas dont le type est "manga"
     setState(() {
       mangaTitles = list
           .skip(1) // On saute la première ligne (en-têtes)
-          .map((row) => row[titleIndex].toString()) // Convertit chaque valeur en chaîne
+          .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
+          .map((row) => row[titleIndex].toString()) // Convertir chaque titre en chaîne
           .toList();
     });
 
-    // Mettre à jour les pages après avoir chargé les titres
+
+  // Mettre à jour les pages après avoir chargé les titres
     _pages.addAll([
       const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
       const Center(child: Text("Page 2", style: TextStyle(fontSize: 30))),
-      MySearchPage(titles: mangaTitles,), // Passer la liste des titres à MySearchPage
+      MySearchPage(titles: mangaTitles, ), // Passer la liste des titres à MySearchPage
       const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
     ]);
   }
