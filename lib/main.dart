@@ -73,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _pages.addAll([
       const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
       const Center(child: Text("Page 2", style: TextStyle(fontSize: 30))),
-      MySearchPage(titles: mangaTitles, title: 'Liste des mangas',), // Passer la liste des titres à MySearchPage
+      MySearchPage(titles: mangaTitles,), // Passer la liste des titres à MySearchPage
       const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
     ]);
   }
