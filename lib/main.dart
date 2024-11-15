@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:manga_library/screen/MyLibraryPage.dart';
 
 import 'list.dart';
 
@@ -37,16 +38,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 1; // Variable pour gérer l'index de la page sélectionnée
+  int _selectedIndex = 0; // Variable pour gérer l'index de la page sélectionnée
   final PageController _pageController = PageController(); // Pour la gestion du swipe
 
   // Liste des pages de l'application
-  final List<Widget> _pages = [
-    const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
-    const Center(child: Text("Page 2", style: TextStyle(fontSize: 30))),
-    const MySearchPage(title: 'Page de recherche de la liste des manga',),
-    const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
-  ];
+  List<Widget> _pages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    String apikey = dotenv.env['API_KEY'] ?? "No API Key Found";
+    _pages =  [
+      const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
+      MyLibrarypage(apiKey: apikey),
+      const MySearchPage(title: 'Page de recherche de la liste des manga',),
+      const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
+    ];
+  }
 
   // Fonction pour changer la page via le BottomNavigationBar
   void _onItemTapped(int index) {
