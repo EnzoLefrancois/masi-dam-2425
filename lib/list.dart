@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'manga_search_delegate.dart'; // Assurez-vous que ce fichier existe et est correctement importé.
+import 'package:http/http.dart' as http;
 
 class MySearchPage extends StatefulWidget {
   final List<String> titles; // Recevoir la liste des titres
@@ -74,6 +75,7 @@ class _MySearchPageState extends State<MySearchPage> {
                   title: Text(filteredTitles[index]),
                   onTap: () {
                     // Action lors du clic sur un titre (par exemple, afficher plus de détails)
+
                   },
                 );
               },
