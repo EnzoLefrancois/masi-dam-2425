@@ -1,9 +1,10 @@
+import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:manga_library/screen/MyLibraryPage.dart';
-
 import 'list.dart';
-
+import 'model/mybooks.dart';
 
 Future<void> main() async {
   // Charger le fichier .env
@@ -40,20 +41,63 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0; // Variable pour gérer l'index de la page sélectionnée
   final PageController _pageController = PageController(); // Pour la gestion du swipe
+  List<String> mangaTitles = []; // Liste pour stocker les titres des mangas
+  List<LibraryBook> allMangaLibrary = [];
 
   // Liste des pages de l'application
-  List<Widget> _pages = [];
+  final List<Widget> _pages = [];
+
 
   @override
   void initState() {
     super.initState();
-    String apikey = dotenv.env['API_KEY'] ?? "No API Key Found";
-    _pages =  [
+    loadCSV(); // Charger le fichier CSV au démarrage
+  }
+
+  // Charger et parser le fichier CSV
+  Future<void> loadCSV() async {
+    // Charger le fichier manga.csv depuis les assets
+    final rawData = await rootBundle.loadString('assets/manga.csv');
+
+    // Parser le CSV
+    List<List<dynamic>> list = CsvToListConverter().convert(rawData);
+
+    // Trouver l'index des colonnes "title" et "type"
+    final titleIndex = list[0].indexOf('title');
+    final typeIndex = list[0].indexOf('type');
+
+    final coverIndex = list[0].indexOf('main_picture');
+    final volumeIndex = list[0].indexOf('volumes');
+
+    // Extraire les titres des mangas dont le type est "manga"
+    setState(() {
+      mangaTitles = list
+          .skip(1) // On saute la première ligne (en-têtes)
+          .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
+          .map((row) => row[titleIndex].toString()) // Convertir chaque titre en chaîne
+          .toList();
+      allMangaLibrary = list
+          .skip(1) // On saute la première ligne (en-têtes)
+          .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
+          .map((row)  {
+
+            return LibraryBook(
+                title:  row[titleIndex].toString().trim().isEmpty ? "" : row[titleIndex].toString().trim(),
+                cover:  row[coverIndex].toString(),
+                nbBooks: int.tryParse(row[volumeIndex].toString().trim().isEmpty ? "0" : row[volumeIndex].toString().trim()) ?? 0 );
+      } )
+          .toList();
+    });
+
+
+
+  // Mettre à jour les pages après avoir chargé les titres
+    _pages.addAll([
       const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
-      MyLibrarypage(apiKey: apikey),
-      const MySearchPage(title: 'Page de recherche de la liste des manga',),
+      MyLibrarypage(allBooks: allMangaLibrary,),
+      MySearchPage(titles: mangaTitles, ), // Passer la liste des titres à MySearchPage
       const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
-    ];
+    ]);
   }
 
   // Fonction pour changer la page via le BottomNavigationBar
@@ -78,7 +122,9 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: PageView(
+      body: _pages.isEmpty
+          ? const Center(child: CircularProgressIndicator()) // Chargement initial
+          : PageView(
         controller: _pageController,
         onPageChanged: _onPageChanged, // Gérer le swipe
         children: _pages,
