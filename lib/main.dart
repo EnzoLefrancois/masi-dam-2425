@@ -6,7 +6,6 @@ import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'list.dart';
 import 'model/mybooks.dart';
 
-
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
@@ -47,7 +46,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Liste des pages de l'application
   final List<Widget> _pages = [];
-
 
   @override
   void initState() {
