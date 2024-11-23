@@ -2,7 +2,9 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'list.dart';
+import 'model/mybooks.dart';
 
 Future<void> main() async {
   // Charger le fichier .env
@@ -37,9 +39,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 1; // Variable pour gérer l'index de la page sélectionnée
+  int _selectedIndex = 0; // Variable pour gérer l'index de la page sélectionnée
   final PageController _pageController = PageController(); // Pour la gestion du swipe
   List<String> mangaTitles = []; // Liste pour stocker les titres des mangas
+  List<LibraryBook> allMangaLibrary = [];
 
   // Liste des pages de l'application
   final List<Widget> _pages = [];
@@ -62,6 +65,9 @@ class _MyHomePageState extends State<MyHomePage> {
     final titleIndex = list[0].indexOf('title');
     final typeIndex = list[0].indexOf('type');
 
+    final coverIndex = list[0].indexOf('main_picture');
+    final volumeIndex = list[0].indexOf('volumes');
+
     // Extraire les titres des mangas dont le type est "manga"
     setState(() {
       mangaTitles = list
@@ -69,13 +75,25 @@ class _MyHomePageState extends State<MyHomePage> {
           .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
           .map((row) => row[titleIndex].toString()) // Convertir chaque titre en chaîne
           .toList();
+      allMangaLibrary = list
+          .skip(1) // On saute la première ligne (en-têtes)
+          .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
+          .map((row)  {
+
+            return LibraryBook(
+                title:  row[titleIndex].toString().trim().isEmpty ? "" : row[titleIndex].toString().trim(),
+                cover:  row[coverIndex].toString(),
+                nbBooks: int.tryParse(row[volumeIndex].toString().trim().isEmpty ? "0" : row[volumeIndex].toString().trim()) ?? 0 );
+      } )
+          .toList();
     });
+
 
 
   // Mettre à jour les pages après avoir chargé les titres
     _pages.addAll([
       const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
-      const Center(child: Text("Page 2", style: TextStyle(fontSize: 30))),
+      MyLibrarypage(allBooks: allMangaLibrary,),
       MySearchPage(titles: mangaTitles, ), // Passer la liste des titres à MySearchPage
       const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
     ]);
