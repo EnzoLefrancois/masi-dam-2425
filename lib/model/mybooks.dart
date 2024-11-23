@@ -42,7 +42,7 @@ class Books {
     title = json['title'];
     mainTitle = json['main_title'];
     cover = json['cover'];
-    readingStatus = json['is_read'] == 0 ? "" : "  -  Lecture en cours" ;
+    readingStatus = json['is_read'] == 0 ? "" : "Lecture en cours" ;
     iSBN = json['ISBN'];
   }
 
@@ -52,7 +52,7 @@ class Books {
     data['title'] = this.title;
     data['main_title'] = this.mainTitle;
     data['cover'] = this.cover;
-    data['is_read'] = this.readingStatus == "  -  Lecture en cours" ? 1 : 0;
+    data['is_read'] = this.readingStatus == "Lecture en cours" ? 1 : 0;
     data['ISBN'] = this.iSBN;
     return data;
   }
@@ -76,7 +76,7 @@ class LibraryBook {
   LibraryBook.fromJson(Map<String, dynamic> json) {
     title = json['title'];
     cover = json['cover'];
-    readingStatus = json['is_read'] == 0 ? "" : "  -  Lecture en cours" ;
+    readingStatus = json['is_read'] == 0 ? "" : "Lecture en cours" ;
     nbBooks = json['nbBooks'];
     nbOwnedBook = json['nbOwnedBook'];
   }
@@ -85,7 +85,7 @@ class LibraryBook {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['title'] = this.title;
     data['cover'] = this.cover;
-    data['is_read'] = this.readingStatus == "  -  Lecture en cours" ? 1 : 0;
+    data['is_read'] = this.readingStatus == "Lecture en cours" ? 1 : 0;
     data['nbBooks'] = this.nbBooks;
     data['nbOwnedBook'] = this.nbOwnedBook;
     return data;
