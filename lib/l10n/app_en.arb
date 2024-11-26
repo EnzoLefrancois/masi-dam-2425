@@ -1,0 +1,11 @@
+{
+    "wishlist": "Wishlist",
+    "library": "Library",
+    "search": "Search",
+    "settings": "Settings",
+
+    "searchManga": "Search manga",
+    "currentlyReading": "Currently reading",
+    "sortByNameAscending": "Sort by name A-Z",
+    "sortByNameDescending": "Sort by name Z-A"
+}
