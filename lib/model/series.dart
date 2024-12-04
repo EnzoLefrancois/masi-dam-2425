@@ -1,3 +1,6 @@
+import 'package:manga_library/model/authors.dart';
+import 'package:manga_library/model/book.dart';
+
 class Series {
   String? title;
   String? cover;
@@ -6,12 +9,21 @@ class Series {
 
   int nbOwnedBook = 0;
 
+  List<String>? genresList;
+  List<Authors>? authorsList;
+
+  List<Book> books = [];
+
   Series({
     this.title,
     this.cover,
     this.readingStatus,
     this.nbBooks,
+    this.genresList,
+    this.authorsList
   });
+
+  void addBook(Book book) => books.add(book);
 
   Series.fromJson(Map<String, dynamic> json) {
     title = json['title'];

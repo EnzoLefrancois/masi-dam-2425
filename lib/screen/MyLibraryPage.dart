@@ -4,6 +4,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/screen/series_details_page.dart';
 
 import '../model/book.dart';
 import '../model/series.dart';
@@ -63,6 +64,8 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
         masterBook.readingStatus = ownedBook.readingStatus;
         masterBooks.add(masterBook);
       }
+
+      masterBook.addBook(ownedBook);
     }
 
     return masterBooks;
@@ -239,7 +242,11 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
             child: InkWell(
               onTap: () {
-                print('click $index');
+                Navigator.pushNamed(
+                  context,
+                  '/series-details',
+                  arguments: _filteredOwnedBooksLibrabrys[index], 
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
