@@ -80,9 +80,10 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
       children: [
         _searchSide(),
         FutureBuilder(future: _hasData, builder: (context, snapshot) {
-          if (!snapshot.hasData)
-            return  Expanded(child: Center(child:CircularProgressIndicator()),);
-          return Expanded(child: _ownedBooks.isEmpty ? Text("IT IS EMPTY") :  _listSide());
+          if (!snapshot.hasData) {
+            return  const Expanded(child: Center(child:CircularProgressIndicator()),);
+          }
+          return Expanded(child: _ownedBooks.isEmpty ? const Text("IT IS EMPTY") :  _listSide());
         }),
     
       ],
@@ -153,7 +154,8 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 ),
               ),
             ),
-            SizedBox(width: 10,),
+            ),
+            const SizedBox(width: 10,),
             PopupMenuButton<int>(
               onSelected: (value) {
                 setState(() {
@@ -171,8 +173,6 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                     } else {
                       _filteredOwnedBooksLibrabrys.sort((b,a) => a.title!.compareTo(b.title!));
                     }
-
-
                   }
                 });
               },
@@ -183,18 +183,16 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               child: Container(
                 decoration: ShapeDecoration(
                   color: Theme.of(context).colorScheme.inversePrimary,
-                  shape: CircleBorder(),
+                  shape: const CircleBorder(),
                 ),
-                padding: EdgeInsets.all(10), // Espace autour de l'icône
-                child: Icon(
+                padding: const EdgeInsets.all(10), // Espace autour de l'icône
+                child: const Icon(
                   Icons.sort_by_alpha_outlined,
                   size: 25,
                   color: Colors.white, // Couleur de l'icône
                 ),
               ),
             ),
-
-
           ]
       ),
     );
@@ -218,7 +216,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
-          if (isSelected) // Ajoute une icône pour indiquer la sélection
+          if (isSelected) 
             Icon(Icons.check, color: Theme
                 .of(context)
                 .colorScheme
@@ -229,14 +227,13 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
   }
 
   Widget _listSide() {
-     return  Padding(
-       padding: const EdgeInsets.all(8.0),
-       child: ListView.builder(
+    return  Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
         itemCount: _filteredOwnedBooksLibrabrys.length,
-        itemBuilder: (_,index)
-        {
+        itemBuilder: (_,index) {
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
             child: InkWell(
               onTap: () {
                 print('click $index');
@@ -251,31 +248,43 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
+                      width: 100,
+                      height: 150,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
                         shape: BoxShape.rectangle,
                       ),
                       padding: const EdgeInsets.all(4.0),
-                      child: Image.network(_filteredOwnedBooksLibrabrys[index].cover! , width: 100, height: 150,),
+                      child: Image.network(_filteredOwnedBooksLibrabrys[index].cover! ,
+                        loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                          return loadingProgress == null ? child : const SizedBox(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                        errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                          return Image.asset('assets/images/no-internet-connection-icon.jpg',);
+                        },
+                      ),
                     ),
-                    SizedBox(width: 10,),
+                    const SizedBox(width: 10,),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             _filteredOwnedBooksLibrabrys[index].title!,
-                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
                           ),
                           Text(
                             '${_filteredOwnedBooksLibrabrys[index].nbOwnedBook}/${_filteredOwnedBooksLibrabrys[index].nbBooks} Tomes',
-                            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
+                            style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 16),
                           ),
                           Text(
                             '${_filteredOwnedBooksLibrabrys[index].readingStatus}',
-                            style: TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
+                            style: const TextStyle(fontWeight: FontWeight.normal, fontSize: 14),
                           ),
-                          
                         ],
                       ),
                     )
@@ -286,7 +295,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
           )
           ;
         },
-           ),
-     );
+      ),
+    );
   }
 }
