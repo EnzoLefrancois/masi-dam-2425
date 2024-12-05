@@ -2,9 +2,13 @@ import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'list.dart';
-import 'model/mybooks.dart';
+import 'model/my_books.dart';
+import 'model/series.dart';
+import './routes.dart';
 
 Future<void> main() async {
   // Charger le fichier .env
@@ -18,12 +22,27 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Manga Vault',
+
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'), // English
+        Locale('fr'), // Spanish
+      ],
+
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Manga Vault'),
+
+      routes: customRoutes,
+      initialRoute: '/',
+
       debugShowCheckedModeBanner: false,
     );
   }
@@ -42,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0; // Variable pour gérer l'index de la page sélectionnée
   final PageController _pageController = PageController(); // Pour la gestion du swipe
   List<String> mangaTitles = []; // Liste pour stocker les titres des mangas
-  List<LibraryBook> allMangaLibrary = [];
+  List<Series> allMangaLibrary = [];
 
   // Liste des pages de l'application
   final List<Widget> _pages = [];
@@ -80,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
           .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
           .map((row)  {
 
-            return LibraryBook(
+            return Series(
                 title:  row[titleIndex].toString().trim().isEmpty ? "" : row[titleIndex].toString().trim(),
                 cover:  row[coverIndex].toString(),
                 nbBooks: int.tryParse(row[volumeIndex].toString().trim().isEmpty ? "0" : row[volumeIndex].toString().trim()) ?? 0 );
@@ -88,14 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
           .toList();
     });
 
-
-
-  // Mettre à jour les pages après avoir chargé les titres
+    // Mettre à jour les pages après avoir chargé les titres
     _pages.addAll([
-      const Center(child: Text("Page 1", style: TextStyle(fontSize: 30))),
-      MyLibrarypage(allBooks: allMangaLibrary,),
-      MySearchPage(titles: mangaTitles, ), // Passer la liste des titres à MySearchPage
-      const Center(child: Text("Page 4", style: TextStyle(fontSize: 30))),
+      const Center(child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
+      MyLibrarypage(allBooks: allMangaLibrary),
+      MySearchPage(titles: mangaTitles), // Passer la liste des titres à MySearchPage
+      const Center(child: Text("TODO : SETTINGS", style: TextStyle(fontSize: 30))),
     ]);
   }
 
@@ -122,40 +139,42 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: _pages.isEmpty
-          ? const Center(child: CircularProgressIndicator()) // Chargement initial
+          ? const Center(child: CircularProgressIndicator())
           : PageView(
         controller: _pageController,
-        onPageChanged: _onPageChanged, // Gérer le swipe
+        onPageChanged: _onPageChanged,
         children: _pages,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped, // Changer de page via le menu
-        selectedItemColor: Colors.blue, // Couleur des icônes sélectionnées
-        unselectedItemColor: Colors.grey, // Couleur des icônes non sélectionnées
-        items: const <BottomNavigationBarItem>[
+        onTap: _onItemTapped,
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Wishlists',
+            icon: const Icon(Icons.favorite),
+            label: AppLocalizations.of(context)!.wishlist,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Bibliothèque',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.library,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Recherche',
+            icon: const Icon(Icons.search),
+            label: AppLocalizations.of(context)!.search,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Options',
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.of(context)!.settings,
           ),
         ],
       ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: null,
-        tooltip: 'Increment',
-        child: Icon(Icons.document_scanner_rounded),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.pushNamed(context, '/isbn-scanner');
+        },
+        tooltip: 'Scanner',
+        child: const Icon(Icons.document_scanner_rounded),
       ),
     );
   }

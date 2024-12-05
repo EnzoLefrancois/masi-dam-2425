@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'manga_search_delegate.dart'; // Assurez-vous que ce fichier existe et est correctement importé.
+import 'manga_search_delegate.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
 
 class MySearchPage extends StatefulWidget {
-  final List<String> titles; // Recevoir la liste des titres
+  final List<String> titles;
 
-  // Le constructeur ne prend plus un titre inutile
   const MySearchPage({super.key, required this.titles});
 
   @override
@@ -39,9 +39,8 @@ class _MySearchPageState extends State<MySearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Search Manga"),
+        title: Text(AppLocalizations.of(context)!.searchManga),
         actions: [
-          // Ajouter un champ de recherche dans l'AppBar
           IconButton(
             icon: const Icon(Icons.search),
             onPressed: () {
@@ -59,9 +58,9 @@ class _MySearchPageState extends State<MySearchPage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              decoration: const InputDecoration(
-                labelText: 'Search Manga',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.searchManga,
+                border: const OutlineInputBorder(),
               ),
               onChanged: _filterTitles, // Filtrer les titres lors de la saisie
             ),

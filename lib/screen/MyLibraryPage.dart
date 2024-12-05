@@ -1,13 +1,17 @@
 import 'dart:convert';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:manga_library/model/mybooks.dart';
+import 'package:manga_library/model/my_books.dart';
+
+import '../model/book.dart';
+import '../model/series.dart';
 
 class MyLibrarypage extends StatefulWidget {
   const MyLibrarypage({super.key, required this.allBooks});
 
-  final List<LibraryBook> allBooks;
+  final List<Series> allBooks;
 
   @override
   State<MyLibrarypage> createState() => _MyLibraryPageState();
@@ -16,9 +20,9 @@ class MyLibrarypage extends StatefulWidget {
 class _MyLibraryPageState extends State<MyLibrarypage> {
   TextEditingController searchController = TextEditingController(); // Contrôleur pour la recherche
   late Future<bool> _hasData;
-  late List<Books> _ownedBooks;
-  late List<LibraryBook> _filteredOwnedBooksLibrabrys;
-  late List<LibraryBook> _ownedMainBook;
+  late List<Book> _ownedBooks;
+  late List<Series> _filteredOwnedBooksLibrabrys;
+  late List<Series> _ownedMainBook;
 
   int _selectedFilter = -1; 
   int _selectedSort = -1;
@@ -35,17 +39,17 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
     return true;
   }
 
-  List<LibraryBook> _chargeMainBooks() {
-    List<LibraryBook> masterBooks = [];
-    List<LibraryBook> allBooks = widget.allBooks;
+  List<Series> _chargeMainBooks() {
+    List<Series> masterBooks = [];
+    List<Series> allBooks = widget.allBooks;
 
 
     for (var ownedBook in _ownedBooks) {
-      LibraryBook? masterBook = allBooks.firstWhere ((book) {
+      Series? masterBook = allBooks.firstWhere ((book) {
         // mettre en miniscule, enlever tout les espaces, garder que les caractere
         return book.title!.toLowerCase().replaceAll(' ', '').replaceAll(new RegExp(r'[^\w\s]+'),'') ==
             ownedBook.mainTitle!.toLowerCase().replaceAll(' ', '').replaceAll(new RegExp(r'[^\w\s]+'),'');
-      }, orElse: () => LibraryBook(title: ownedBook.mainTitle, cover: ownedBook.cover, readingStatus: ownedBook.readingStatus, nbBooks: 1));
+      }, orElse: () => Series(title: ownedBook.mainTitle, cover: ownedBook.cover, readingStatus: ownedBook.readingStatus, nbBooks: 1));
 
       int index = masterBooks.indexOf(masterBook);
 
@@ -104,50 +108,50 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Row(
-        children: [
-          Expanded(child: TextField(
-            controller: searchController,
-            decoration: const InputDecoration(
-                labelText: 'Search Manga',
-                border: OutlineInputBorder(),
-              ),
-            onChanged: _filterTitles, // Filtrer les titres lors de la saisie
-            ),
-          ),
-          const SizedBox(width: 20,),
-          PopupMenuButton<int>(
-            onSelected: (value) {
-              setState(() {
-                _filteredOwnedBooksLibrabrys = _ownedMainBook;
-                if (_selectedFilter == value) {
-                  _selectedFilter = -1;
-                } else {
-                  _selectedFilter = value;
-                  if (_selectedSort == 0) {
-                    _filteredOwnedBooksLibrabrys.sort((a,b) => a.title!.compareTo(b.title!));
-                  } else if (_selectedSort == 1) {
-                    _filteredOwnedBooksLibrabrys.sort((b,a) => a.title!.compareTo(b.title!));
+          children: [
+           Expanded(child: TextField(
+             controller: searchController,
+             decoration: InputDecoration(
+               labelText: AppLocalizations.of(context)!.searchManga,
+               border: const OutlineInputBorder(),
+             ),
+             onChanged: _filterTitles, // Filtrer les titres lors de la saisie
+           ),),
+            SizedBox(width: 20,),
+            PopupMenuButton<int>(
+              onSelected: (value) {
+                setState(() {
+                  _filteredOwnedBooksLibrabrys = _ownedMainBook;
+                  if (_selectedFilter == value) {
+                    _selectedFilter = -1;
+                  } else {
+                    _selectedFilter = value;
+                    if (_selectedSort == 0) {
+                      _filteredOwnedBooksLibrabrys.sort((a,b) => a.title!.compareTo(b.title!));
+                    } else if (_selectedSort == 1) {
+                      _filteredOwnedBooksLibrabrys.sort((b,a) => a.title!.compareTo(b.title!));
+                    }
+                    if (value == 0) {
+                      _filteredOwnedBooksLibrabrys = _filteredOwnedBooksLibrabrys.where((book) =>
+                          book.readingStatus!.toLowerCase() == ("Lecture en cours".toLowerCase())).toList();
+                    } 
                   }
-                  if (value == 0) {
-                    _filteredOwnedBooksLibrabrys = _filteredOwnedBooksLibrabrys.where((book) =>
-                        book.readingStatus!.toLowerCase() == ("Lecture en cours".toLowerCase())).toList();
-                  } 
-                }
-              });
-            },
-            itemBuilder: (context) => [
-              _buildMenuItem(context, 0,"Lecture en cours", _selectedFilter == 0),
-            ],
-            child: Container(
-              decoration: ShapeDecoration(
-                color: Theme.of(context).colorScheme.inversePrimary,
-                shape: const CircleBorder(),
-              ),
-              padding: const EdgeInsets.all(10), // Espace autour de l'icône
-              child: const Icon(
-                Icons.filter_list,
-                size: 25,
-                color: Colors.white, // Couleur de l'icône
+                });
+              },
+              itemBuilder: (context) => [
+                _buildMenuItem(context, 0, AppLocalizations.of(context)!.currentlyReading, _selectedFilter == 0),
+              ],
+              child: Container(
+                decoration: ShapeDecoration(
+                  color: Theme.of(context).colorScheme.inversePrimary,
+                  shape: CircleBorder(),
+                ),
+                padding: EdgeInsets.all(10), // Espace autour de l'icône
+                child: Icon(
+                  Icons.filter_list,
+                  size: 25,
+                  color: Colors.white, // Couleur de l'icône
+                ),
               ),
             ),
             ),
@@ -173,8 +177,8 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 });
               },
               itemBuilder: (context) => [
-                _buildMenuItem(context, 0,"Trie par nom A-Z", _selectedSort == 0),
-                _buildMenuItem(context, 1, "Trie par nom Z-A", _selectedSort == 1),
+                _buildMenuItem(context, 0, AppLocalizations.of(context)!.sortByNameAscending, _selectedSort == 0),
+                _buildMenuItem(context, 1, AppLocalizations.of(context)!.sortByNameDescending, _selectedSort == 1),
               ],
               child: Container(
                 decoration: ShapeDecoration(
