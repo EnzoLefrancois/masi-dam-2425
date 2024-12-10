@@ -7,5 +7,13 @@
     "searchManga": "Rechercher un manga",
     "currentlyReading": "En cours de lecture",
     "sortByNameAscending": "Tri sur le nom A-Z",
-    "sortByNameDescending": "Tri sur le nom Z-A"
+    "sortByNameDescending": "Tri sur le nom Z-A",
+
+    "categories": "Catégories",
+    "contributors": "Contributeurs",
+    "edition": "Éditions",
+    "tome": "Tome",
+    "unknowTitle": "Titre inconnu",
+
+    "libraryEmpty" : "Pas de livre dans votre Bibliothèque"
 }
