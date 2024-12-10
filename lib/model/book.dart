@@ -23,7 +23,7 @@ class Book {
     cover = json['cover'];
     readingStatus = json['is_read'] == 0
         ? ""
-        : AppLocalizations.of(context)!.currentlyReading;
+        : "lis actuellement";
     iSBN = json['ISBN'];
   }
 
@@ -34,7 +34,7 @@ class Book {
     data['main_title'] = this.mainTitle;
     data['cover'] = this.cover;
     data['is_read'] =
-        this.readingStatus == AppLocalizations.of(context)!.currentlyReading
+        this.readingStatus == "lis actuellement"
             ? 1
             : 0;
     data['ISBN'] = this.iSBN;

@@ -3,6 +3,10 @@
 *.env
 *.csv
 
+firebase.json
+google-services.json
+firebase_options.dart
+
 # Miscellaneous
 *.class
 *.lock

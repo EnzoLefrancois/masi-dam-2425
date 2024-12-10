@@ -60,14 +60,17 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               title: ownedBook.mainTitle,
               cover: ownedBook.cover,
               readingStatus: ownedBook.readingStatus,
-              nbBooks: 1));
+              nbBooks: 1,
+              genresList: [],
+            authorsList: []
+          ));
 
       int index = masterBooks.indexOf(masterBook);
 
       if (index != -1) {
         masterBooks[index].nbOwnedBook++;
         if (ownedBook.readingStatus ==
-            AppLocalizations.of(context)!.currentlyReading) {
+            "lis actuellement") {
           masterBook.readingStatus = ownedBook.readingStatus;
         }
       } else {
@@ -132,7 +135,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
           child: TextField(
             controller: searchController,
             decoration: InputDecoration(
-              labelText: AppLocalizations.of(context)!.searchManga,
+              labelText: "chercher",
               border: const OutlineInputBorder(),
             ),
             onChanged: _filterTitles, // Filtrer les titres lors de la saisie

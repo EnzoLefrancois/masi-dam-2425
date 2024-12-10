@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:csv/csv.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -8,46 +10,67 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/model/authors.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
+import 'package:manga_library/screen/login/options.dart';
 import 'list.dart';
 import 'model/my_books.dart';
 import 'model/series.dart';
 import './routes.dart';
 
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
+import 'package:provider/provider.dart';
+
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
+  await Firebase.initializeApp(); // Initialisation de Firebase
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const String _title = 'Manga Vault';
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Manga Vault',
+    User? user = FirebaseAuth.instance.currentUser;
+    if(user == null)
+    {
+      return MaterialApp(
+        title: 'Manga Vault',
 
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('fr'), // Spanish
-      ],
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('fr'), // Spanish
+        ],
 
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
 
-      routes: customRoutes,
-      initialRoute: '/',
+        routes: customRoutes,
+        initialRoute: '/login',
 
-      debugShowCheckedModeBanner: false,
-    );
+
+        debugShowCheckedModeBanner: false,
+      );
+    }
+    else{
+      return MaterialApp(
+        theme: ThemeData(brightness: Brightness.dark),
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        home:  const MyHomePage(title: 'Manga Vault'),
+      );
+    }
   }
 }
 
@@ -69,6 +92,8 @@ class _MyHomePageState extends State<MyHomePage> {
   // Liste des pages de l'application
   final List<Widget> _pages = [];
 
+
+
   @override
   void initState() {
     super.initState();
@@ -81,7 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final rawData = await rootBundle.loadString('assets/manga.csv');
 
     // Parser le CSV
-    List<List<dynamic>> list = CsvToListConverter().convert(rawData);
+    List<List<dynamic>> list = const CsvToListConverter().convert(rawData);
 
     // Trouver l'index des colonnes "title" et "type"
     final titleIndex = list[0].indexOf('title');
@@ -91,6 +116,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final volumeIndex = list[0].indexOf('volumes');
     final genresIndex = list[0].indexOf('genres');
     final authorsIndex = list[0].indexOf('authors');
+
+    if ([titleIndex, typeIndex, coverIndex, volumeIndex, genresIndex, authorsIndex].contains(-1)) {
+      throw Exception("Certains indices d'en-tête sont introuvables dans le CSV.");
+    }
 
     // Extraire les titres des mangas dont le type est "manga"
     setState(() {
@@ -132,7 +161,7 @@ class _MyHomePageState extends State<MyHomePage> {
       const Center(child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
       MyLibrarypage(allBooks: allMangaLibrary),
       MySearchPage(titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      const Center(child: Text("TODO : SETTINGS", style: TextStyle(fontSize: 30))),
+      const Options()
     ]);
   }
 
@@ -170,22 +199,22 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: <BottomNavigationBarItem>[
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: const Icon(Icons.favorite),
-            label: AppLocalizations.of(context)!.wishlist,
+            icon: Icon(Icons.favorite),
+            label: "AppLocalizations.of(context)!.wishlist",
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context)!.library,
+            icon: Icon(Icons.home),
+            label: "AppLocalizations.of(context)!.wishlist",
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.search),
-            label: AppLocalizations.of(context)!.search,
+            icon: Icon(Icons.search),
+            label: "AppLocalizations.of(context)!.wishlist",
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings),
-            label: AppLocalizations.of(context)!.settings,
+            icon: Icon(Icons.settings),
+            label: "AppLocalizations.of(context)!.wishlist",
           ),
         ],
       ),
