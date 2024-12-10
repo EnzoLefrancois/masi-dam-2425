@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manga_library/model/authors.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'list.dart';
 import 'model/my_books.dart';
@@ -86,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final coverIndex = list[0].indexOf('main_picture');
     final volumeIndex = list[0].indexOf('volumes');
+    final genresIndex = list[0].indexOf('genres');
+    final authorsIndex = list[0].indexOf('authors');
 
     // Extraire les titres des mangas dont le type est "manga"
     setState(() {
@@ -98,10 +103,25 @@ class _MyHomePageState extends State<MyHomePage> {
           .skip(1) // On saute la première ligne (en-têtes)
           .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
           .map((row)  {
+            // categorie
+            String genres = row[genresIndex].toString();
+            String cleanedData = genres.replaceAll("[", "").replaceAll("]", "").replaceAll("'", "");
+            List<String> genreList = cleanedData.split(", ").map((e) => e.trim()).toList();
 
+            // auteurs
+            List<Authors> authorsList = [];
+            try {
+              String authorsString = row[authorsIndex].toString();
+              authorsString = authorsString.replaceAll("'", '"');
+              List<dynamic> jsonList = jsonDecode(authorsString);
+              authorsList = jsonList.map((json) => Authors.fromJson(json)).toList();
+            } on Exception catch (_) {
+            }
             return Series(
                 title:  row[titleIndex].toString().trim().isEmpty ? "" : row[titleIndex].toString().trim(),
                 cover:  row[coverIndex].toString(),
+                genresList: genreList,
+                authorsList: authorsList,
                 nbBooks: int.tryParse(row[volumeIndex].toString().trim().isEmpty ? "0" : row[volumeIndex].toString().trim()) ?? 0 );
       } )
           .toList();

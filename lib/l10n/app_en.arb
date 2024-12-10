@@ -7,5 +7,13 @@
     "searchManga": "Search manga",
     "currentlyReading": "Currently reading",
     "sortByNameAscending": "Sort by name A-Z",
-    "sortByNameDescending": "Sort by name Z-A"
+    "sortByNameDescending": "Sort by name Z-A",
+
+    "categories": "Categories",
+    "contributors": "Contributors",
+    "edition": "Edition",
+    "tome": "Tome",
+    "unknowTitle": "Unknow Title",
+
+    "libraryEmpty": "No book in library"
 }

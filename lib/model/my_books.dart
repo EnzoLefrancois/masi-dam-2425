@@ -5,19 +5,19 @@ class MyBooks {
 
   MyBooks({this.books});
 
-  MyBooks.fromJson(Map<String, dynamic> json) {
+  MyBooks.fromJson(Map<String, dynamic> json, context) {
     if (json['books'] != null) {
       books = <Book>[];
       json['books'].forEach((v) {
-        books!.add(new Book.fromJson(v));
+        books!.add(Book.fromJson(v, context));
       });
     }
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.books != null) {
-      data['books'] = this.books!.map((v) => v.toJson()).toList();
+  Map<String, dynamic> toJson(context) {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (books != null) {
+      data['books'] = books!.map((v) => v.toJson(context)).toList();
     }
     return data;
   }
