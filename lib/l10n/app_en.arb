@@ -3,7 +3,9 @@
     "library": "Library",
     "search": "Search",
     "settings": "Settings",
+    "profile": "Profile",
 
+    "addManga": "Add a manga",
     "searchManga": "Search manga",
     "currentlyReading": "Currently reading",
     "sortByNameAscending": "Sort by name A-Z",

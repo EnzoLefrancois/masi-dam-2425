@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'manga_search_delegate.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
 class MySearchPage extends StatefulWidget {
   final List<String> titles;
@@ -38,20 +37,6 @@ class _MySearchPageState extends State<MySearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.searchManga),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: MangaSearchDelegate(titles: widget.titles),
-              );
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Padding(

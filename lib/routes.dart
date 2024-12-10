@@ -4,7 +4,7 @@ import 'package:manga_library/main.dart';
 import 'screen/isbn_scanner.dart';
 
 var customRoutes = <String, WidgetBuilder>{
-  '/': (context) => const MyHomePage(title: "Manga Vault"),
+  '/': (context) => const MyHomePage(),
 
   '/isbn-scanner': (context) => const IsbnScannerScreen(),
 };

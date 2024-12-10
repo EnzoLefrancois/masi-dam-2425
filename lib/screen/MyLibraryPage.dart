@@ -117,7 +117,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
              ),
              onChanged: _filterTitles, // Filtrer les titres lors de la saisie
            ),),
-            SizedBox(width: 20,),
+            const SizedBox(width: 20,),
             PopupMenuButton<int>(
               onSelected: (value) {
                 setState(() {
@@ -142,18 +142,17 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 _buildMenuItem(context, 0, AppLocalizations.of(context)!.currentlyReading, _selectedFilter == 0),
               ],
               child: Container(
-                decoration: ShapeDecoration(
-                  color: Theme.of(context).colorScheme.inversePrimary,
+                decoration: const ShapeDecoration(
+                  color: Colors.blueAccent,
                   shape: CircleBorder(),
                 ),
-                padding: EdgeInsets.all(10), // Espace autour de l'icône
-                child: Icon(
+                padding: const EdgeInsets.all(10), // Espace autour de l'icône
+                child: const Icon(
                   Icons.filter_list,
                   size: 25,
                   color: Colors.white, // Couleur de l'icône
                 ),
               ),
-            ),
             ),
             const SizedBox(width: 10,),
             PopupMenuButton<int>(
@@ -181,9 +180,9 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 _buildMenuItem(context, 1, AppLocalizations.of(context)!.sortByNameDescending, _selectedSort == 1),
               ],
               child: Container(
-                decoration: ShapeDecoration(
-                  color: Theme.of(context).colorScheme.inversePrimary,
-                  shape: const CircleBorder(),
+                decoration: const ShapeDecoration(
+                  color: Colors.blueAccent,
+                  shape: CircleBorder(),
                 ),
                 padding: const EdgeInsets.all(10), // Espace autour de l'icône
                 child: const Icon(

@@ -6,7 +6,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'list.dart';
-import 'model/my_books.dart';
 import 'model/series.dart';
 import './routes.dart';
 
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
       ],
 
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
         useMaterial3: true,
       ),
 
@@ -49,9 +48,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -65,6 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Liste des pages de l'application
   final List<Widget> _pages = [];
+
+  bool _areTitleLoaded = false;
+  List<String> _pageTitles = [];
 
   @override
   void initState() {
@@ -112,7 +112,7 @@ class _MyHomePageState extends State<MyHomePage> {
       const Center(child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
       MyLibrarypage(allBooks: allMangaLibrary),
       MySearchPage(titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      const Center(child: Text("TODO : SETTINGS", style: TextStyle(fontSize: 30))),
+      const Center(child: Text("TODO : PROFILE", style: TextStyle(fontSize: 30))),
     ]);
   }
 
@@ -133,10 +133,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    if(!_areTitleLoaded) {
+      _pageTitles = [
+        AppLocalizations.of(context)!.wishlist,
+        AppLocalizations.of(context)!.library,
+        AppLocalizations.of(context)!.search,
+        AppLocalizations.of(context)!.profile,
+      ];
+      _areTitleLoaded = true;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        title: Text(_pageTitles[_selectedIndex]),
       ),
       body: _pages.isEmpty
           ? const Center(child: CircularProgressIndicator())
@@ -164,18 +174,28 @@ class _MyHomePageState extends State<MyHomePage> {
             label: AppLocalizations.of(context)!.search,
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.settings),
-            label: AppLocalizations.of(context)!.settings,
+            icon: const Icon(Icons.account_circle),
+            label: AppLocalizations.of(context)!.profile,
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, '/isbn-scanner');
-        },
-        tooltip: 'Scanner',
-        child: const Icon(Icons.document_scanner_rounded),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: Visibility(
+        visible: _selectedIndex == 1,
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.pushNamed(context, '/isbn-scanner');
+          },
+          tooltip: 'Scanner',
+          label: Text(AppLocalizations.of(context)!.addManga),
+          icon: const Icon(Icons.document_scanner_rounded),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+              side: const BorderSide(width: 1,color: Colors.black),
+              borderRadius: BorderRadius.circular(100)
+          ),
+          ),
+        ),
     );
   }
 }
