@@ -43,6 +43,7 @@ class MyApp extends StatelessWidget {
     final limitedRoutes = <String, WidgetBuilder>{
       '/login': customRoutes['/login']!,
       '/register': customRoutes['/register']!,
+      '/main': customRoutes['/main']!,
       '/resetPassword': customRoutes['/resetPassword']!,
     };
 
@@ -51,17 +52,6 @@ class MyApp extends StatelessWidget {
       return MaterialApp(
         title: 'Manga Vault',
 
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [
-          Locale('en'), // English
-          Locale('fr'), // French
-        ],
-
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
@@ -69,7 +59,6 @@ class MyApp extends StatelessWidget {
 
         routes: limitedRoutes,
         initialRoute: '/login',
-
 
         debugShowCheckedModeBanner: false,
       );
@@ -95,8 +84,8 @@ class MyApp extends StatelessWidget {
 
         debugShowCheckedModeBanner: false,
         title: _title,
-
         initialRoute: '/',
+
       );
     }
   }
@@ -112,7 +101,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _selectedIndex = 0; // Variable pour gérer l'index de la page sélectionnée
+  int _selectedIndex = 1; // Variable pour gérer l'index de la page sélectionnée
   final PageController _pageController = PageController(); // Pour la gestion du swipe
   List<String> mangaTitles = []; // Liste pour stocker les titres des mangas
   List<Series> allMangaLibrary = [];
