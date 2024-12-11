@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
 
     final limitedRoutes = <String, WidgetBuilder>{
       '/login': customRoutes['/login']!,
-      '/main': customRoutes['/main']!,
       '/register': customRoutes['/register']!,
       '/resetPassword': customRoutes['/resetPassword']!,
     };
@@ -92,10 +91,12 @@ class MyApp extends StatelessWidget {
           Locale('en'), // English
           Locale('fr'), // French
         ],
+        routes: customRoutes,
 
         debugShowCheckedModeBanner: false,
         title: _title,
-        home:  const MyHomePage(title: 'Manga Vault'),
+
+        initialRoute: '/',
       );
     }
   }
