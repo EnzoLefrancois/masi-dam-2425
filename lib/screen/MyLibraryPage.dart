@@ -19,7 +19,7 @@ class MyLibrarypage extends StatefulWidget {
 
 class _MyLibraryPageState extends State<MyLibrarypage> {
   TextEditingController searchController =
-      TextEditingController(); // Contrôleur pour la recherche
+  TextEditingController(); // Contrôleur pour la recherche
   late Future<bool> _hasData;
   late List<Book> _ownedBooks;
   late List<Series> _filteredOwnedBooksLibrabrys;
@@ -48,9 +48,9 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
       Series? masterBook = allBooks.firstWhere((book) {
         // mettre en miniscule, enlever tout les espaces, garder que les caractere
         return book.title!
-                .toLowerCase()
-                .replaceAll(' ', '')
-                .replaceAll(RegExp(r'[^\w\s]+'), '') ==
+            .toLowerCase()
+            .replaceAll(' ', '')
+            .replaceAll(RegExp(r'[^\w\s]+'), '') ==
             ownedBook.mainTitle!
                 .toLowerCase()
                 .replaceAll(' ', '')
@@ -60,17 +60,14 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               title: ownedBook.mainTitle,
               cover: ownedBook.cover,
               readingStatus: ownedBook.readingStatus,
-              nbBooks: 1,
-              genresList: [],
-            authorsList: []
-          ));
+              nbBooks: 1));
 
       int index = masterBooks.indexOf(masterBook);
 
       if (index != -1) {
         masterBooks[index].nbOwnedBook++;
         if (ownedBook.readingStatus ==
-            "lis actuellement") {
+            AppLocalizations.of(context)!.currentlyReading) {
           masterBook.readingStatus = ownedBook.readingStatus;
         }
       } else {
@@ -121,7 +118,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
       } else {
         _filteredOwnedBooksLibrabrys = _ownedMainBook
             .where((book) =>
-                book.title!.toLowerCase().contains(query.toLowerCase()))
+            book.title!.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     });
@@ -135,7 +132,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
           child: TextField(
             controller: searchController,
             decoration: InputDecoration(
-              labelText: "chercher",
+              labelText: AppLocalizations.of(context)!.searchManga,
               border: const OutlineInputBorder(),
             ),
             onChanged: _filterTitles, // Filtrer les titres lors de la saisie
@@ -162,10 +159,10 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 if (value == 0) {
                   _filteredOwnedBooksLibrabrys = _filteredOwnedBooksLibrabrys
                       .where((book) =>
-                          book.readingStatus!.toLowerCase() ==
-                          (AppLocalizations.of(context)!
-                              .currentlyReading
-                              .toLowerCase()))
+                  book.readingStatus!.toLowerCase() ==
+                      (AppLocalizations.of(context)!
+                          .currentlyReading
+                          .toLowerCase()))
                       .toList();
                 }
               }
@@ -205,10 +202,10 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 if (_selectedFilter == 0) {
                   _filteredOwnedBooksLibrabrys = _filteredOwnedBooksLibrabrys
                       .where((book) =>
-                          book.readingStatus!.toLowerCase() ==
-                          (AppLocalizations.of(context)!
-                              .currentlyReading
-                              .toLowerCase()))
+                  book.readingStatus!.toLowerCase() ==
+                      (AppLocalizations.of(context)!
+                          .currentlyReading
+                          .toLowerCase()))
                       .toList();
                 }
                 if (value == 0) {

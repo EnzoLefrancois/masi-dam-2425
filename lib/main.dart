@@ -19,12 +19,14 @@ import './routes.dart';
 import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:provider/provider.dart';
 
+
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -32,9 +34,19 @@ class MyApp extends StatelessWidget {
 
   static const String _title = 'Manga Vault';
 
+
   @override
   Widget build(BuildContext context) {
     User? user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
+
+    final limitedRoutes = <String, WidgetBuilder>{
+      '/login': customRoutes['/login']!,
+      '/main': customRoutes['/main']!,
+      '/register': customRoutes['/register']!,
+      '/resetPassword': customRoutes['/resetPassword']!,
+    };
+
     if(user == null)
     {
       return MaterialApp(
@@ -48,7 +60,7 @@ class MyApp extends StatelessWidget {
         ],
         supportedLocales: const [
           Locale('en'), // English
-          Locale('fr'), // Spanish
+          Locale('fr'), // French
         ],
 
         theme: ThemeData(
@@ -56,7 +68,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
 
-        routes: customRoutes,
+        routes: limitedRoutes,
         initialRoute: '/login',
 
 
@@ -65,7 +77,22 @@ class MyApp extends StatelessWidget {
     }
     else{
       return MaterialApp(
-        theme: ThemeData(brightness: Brightness.dark),
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true
+        ),
+
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('fr'), // French
+        ],
+
         debugShowCheckedModeBanner: false,
         title: _title,
         home:  const MyHomePage(title: 'Manga Vault'),
@@ -180,6 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -199,22 +227,22 @@ class _MyHomePageState extends State<MyHomePage> {
         onTap: _onItemTapped,
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        items: const <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: "AppLocalizations.of(context)!.wishlist",
+            icon: const Icon(Icons.favorite),
+            label: AppLocalizations.of(context)!.wishlist, // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "AppLocalizations.of(context)!.wishlist",
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(context)!.library,  // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: "AppLocalizations.of(context)!.wishlist",
+            icon: const Icon(Icons.search),
+            label: AppLocalizations.of(context)!.search,  // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: "AppLocalizations.of(context)!.wishlist",
+            icon: const Icon(Icons.settings),
+            label: AppLocalizations.of(context)!.settings,  // Accès direct aux localisations
           ),
         ],
       ),
