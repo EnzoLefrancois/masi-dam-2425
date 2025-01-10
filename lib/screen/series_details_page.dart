@@ -200,9 +200,12 @@ class SeriesDetailsPage extends StatelessWidget {
 
           OwnedTome? serieIsOwned;
           try {
-            serieIsOwned = ownedTome.firstWhere(
-              (element) => element.isbn10 == series.tomes![index].isbn10,
-            );
+            serieIsOwned = ownedTome.firstWhere((element) {
+              bool is13 = element.isbn!.trim().replaceAll("-", "").length == 13;
+              return is13
+                  ? element.isbn == series.tomes![index].isbn13
+                  : element.isbn == series.tomes![index].isbn10;
+            });
           } catch (e) {
             serieIsOwned = null;
           }

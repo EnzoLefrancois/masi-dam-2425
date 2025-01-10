@@ -1,14 +1,14 @@
 import 'package:manga_library/model/tome.dart';
 
 class OwnedTome {
-  String? isbn10;
+  String? isbn;
   int? readingStatus;
   int? serieId;
 
-  OwnedTome({this.isbn10, this.readingStatus, this.serieId});
+  OwnedTome({this.isbn, this.readingStatus, this.serieId});
 
   OwnedTome.fromJson(Map<String, dynamic> json) {
-    isbn10 = json['isbn_10'];
+    isbn = json['isbn'];
     readingStatus = json['reading_status'];
     serieId = json['series_id'];
   }
