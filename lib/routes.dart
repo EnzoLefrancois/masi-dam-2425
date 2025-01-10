@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/main.dart';
 import 'package:manga_library/model/series.dart';
 import 'package:manga_library/screen/login/login.dart';
-import 'package:manga_library/screen/login/options.dart';
+import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/screen/login/register_form.dart';
 import 'package:manga_library/screen/login/reset_password_form.dart';
 import 'package:manga_library/screen/series_details_page.dart';

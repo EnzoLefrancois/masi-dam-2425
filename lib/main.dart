@@ -10,7 +10,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/model/authors.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
-import 'package:manga_library/screen/login/options.dart';
+import 'package:manga_library/screen/options.dart';
 import 'list.dart';
 import 'model/my_books.dart';
 import 'model/series.dart';
