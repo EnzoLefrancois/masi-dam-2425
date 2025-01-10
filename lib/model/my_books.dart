@@ -1,24 +1,28 @@
-import 'book.dart';
+import 'package:manga_library/model/tome.dart';
+
+class OwnedTome {
+  String? isbn10;
+  int? readingStatus;
+  int? serieId;
+
+  OwnedTome({this.isbn10, this.readingStatus, this.serieId});
+
+  OwnedTome.fromJson(Map<String, dynamic> json) {
+    isbn10 = json['isbn_10'];
+    readingStatus = json['reading_status'];
+    serieId = json['series_id'];
+  }
+}
 
 class MyBooks {
-  List<Book>? books;
+  List<OwnedTome>? books = [];
 
   MyBooks({this.books});
 
-  MyBooks.fromJson(Map<String, dynamic> json, context) {
-    if (json['books'] != null) {
-      books = <Book>[];
-      json['books'].forEach((v) {
-        books!.add(Book.fromJson(v, context));
-      });
-    }
-  }
-
-  Map<String, dynamic> toJson(context) {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (books != null) {
-      data['books'] = books!.map((v) => v.toJson(context)).toList();
-    }
-    return data;
+  MyBooks.fromJson(Map<String, dynamic> json) {
+    books = <OwnedTome>[];
+    json.forEach((key, value) {
+      books!.add(OwnedTome.fromJson(value));
+    });
   }
 }

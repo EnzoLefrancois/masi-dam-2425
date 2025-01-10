@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:manga_library/main.dart';
-import 'package:manga_library/model/series.dart';
+import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/screen/login/login.dart';
 import 'package:manga_library/screen/login/options.dart';
 import 'package:manga_library/screen/login/register_form.dart';
@@ -11,12 +12,13 @@ import 'screen/isbn_scanner.dart';
 
 var customRoutes = <String, WidgetBuilder>{
   '/': (context) => const MyHomePage(title: "Manga Vault"),
-
   '/isbn-scanner': (context) => const IsbnScannerScreen(),
-
-  '/series-details' : (context) {
-    final series = ModalRoute.of(context)?.settings.arguments as Series;
-    return SeriesDetailsPage(series: series);
+  '/series-details': (context) {
+    final Map<String, dynamic> args =
+        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    Serie serie = args['serie'];
+    List<OwnedTome> ownedTomes = args['ownedTomes'];
+    return SeriesDetailsPage(series: serie, ownedTome: ownedTomes);
   },
   '/login': (context) => LoginForm(),
   '/main': (context) => const MyApp(),

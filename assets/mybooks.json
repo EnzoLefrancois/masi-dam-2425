@@ -1,36 +1,19 @@
 {
   "books": [
     {
-      "id": "melancoline",
-      "title": "One Piece Episode A - Tome 02: Ace",
-      "main_title": "One Piece Episode A",
-      "cover": "https://images.isbndb.com/covers/71/93/9782344057193.jpg",
-      "is_read": 1,
-      "ISBN": 9782344057193
+      "series_id": 145896,
+      "reading_status": 1,
+      "isbn_10": "2723488527"
     },
     {
-      "id": "melancoline1",
-      "title": "One Piece Episode A - Tome 01: Ace",
-      "main_title": "One Piece Episode A",
-      "cover": "https://images.isbndb.com/covers/71/86/9782344057186.jpg",
-      "is_read": 0,
-      "ISBN": 9782344057186
+      "series_id": 784259,
+      "reading_status": 0,
+      "isbn_10": "2351423550"
     },
     {
-      "id": "melancoline2",
-      "title": "Dragon Ball - Tome 30: Réunification",
-      "main_title": "Dragon Ball",
-      "cover": "https://images.isbndb.com/covers/34/89/9782723423489.jpg",
-      "is_read": 1,
-      "ISBN": 9782723423489
-    },
-    {
-      "id": "melancoline3",
-      "title": "Dragon Ball Gaiden Tensei Shitara Yamcha Datta Ken",
-      "main_title": "Dragon Ball Gaiden Tensei Shitara Yamcha Datta Ken",
-      "cover": "https://images.isbndb.com/covers/26/18/9784088812618.jpg",
-      "is_read": 0,
-      "ISBN": 9784088812618
+      "series_id": 784259,
+      "reading_status": 0,
+      "isbn_10": "2351423569"
     }
   ]
 }

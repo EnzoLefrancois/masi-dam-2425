@@ -12,7 +12,6 @@ class IsbnScannerScreen extends StatefulWidget {
 }
 
 class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
-
   @override
   Widget build(BuildContext context) {
     return Column(
