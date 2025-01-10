@@ -7,6 +7,7 @@ class Book {
   String? cover;
   String? readingStatus;
   int? iSBN;
+  String? synopsis;
 
   Book(
       {this.id,
@@ -25,6 +26,7 @@ class Book {
         ? ""
         : AppLocalizations.of(context)!.currentlyReading;
     iSBN = json['ISBN'];
+    synopsis = json['synopsis'];
   }
 
   Map<String, dynamic> toJson(context) {

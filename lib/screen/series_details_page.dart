@@ -205,6 +205,11 @@ class SeriesDetailsPage extends StatelessWidget {
           return InkWell(
             onTap: () {
               print(title);
+              Navigator.pushNamed(
+                context,
+                '/tome-details',
+                arguments: {'tome': series.books[index], 'serie': series},
+              );
             },
             child: Container(
               padding: const EdgeInsets.only(bottom: 16),
