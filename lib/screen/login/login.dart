@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/model/error_firebase_auth.dart';
 import 'package:manga_library/routes.dart';
 
+
 class LoginForm extends StatelessWidget {
   LoginForm({Key? key}) : super(key: key);
   final _loginFormKey = GlobalKey<FormState>();
@@ -14,9 +15,8 @@ class LoginForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () {FocusScope.of(context).unfocus();},
+
       child: PopScope(
         child: Scaffold(
           body: SafeArea(
@@ -31,25 +31,22 @@ class LoginForm extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Center(
+                     const Center(
                       child: Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Text('Manga Vault',
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold)),
+                        padding: EdgeInsets.only(bottom:8.0),
+                        child: Text('Manga Vault',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold)),
                       ),
                     ),
                     const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 50.0),
-                        child: Text(
-                            "L'application pour suivre l'évolution de votre mangathèque",
-                            style: TextStyle(
-                                fontSize: 13, fontStyle: FontStyle.italic)),
-                      ),
+                        child: Padding(
+                          padding: EdgeInsets.only(bottom:50.0),
+                          child: Text("L'application pour suivre l'évolution de votre mangathèque",style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic)),
+                        ),
+
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 10),
+                      margin: const EdgeInsets.only(
+                          top: 10, bottom:10),
                       padding: const EdgeInsets.symmetric(
                         vertical: 2,
                         horizontal: 2,
@@ -77,6 +74,7 @@ class LoginForm extends StatelessWidget {
                             },
                           ),
                           const Divider(
+
                             height: 8,
                           ),
                           TextFormField(
@@ -96,8 +94,8 @@ class LoginForm extends StatelessWidget {
                                 }
                               },
                               onChanged: (value) {
-                                _password = value;
-                              }),
+                            _password = value;
+                          }),
                         ],
                       ),
                     ),
@@ -105,16 +103,12 @@ class LoginForm extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                            child: const Text('Créer un compte',
-                                style: TextStyle(color: Colors.blue)),
+                          child: const Text('Créer un compte',style: TextStyle(color: Colors.blue)),
                             onTap: () {
                               Navigator.pushNamed(context, '/register');
                             }),
                         InkWell(
-                          child: const Text(
-                            'Mot de passe oublié',
-                            style: TextStyle(color: Colors.blue),
-                          ),
+                          child: const Text('Mot de passe oublié',style: TextStyle(color: Colors.blue),),
                           onTap: () {
                             Navigator.pushNamed(context, '/resetPassword');
                           },
@@ -125,15 +119,14 @@ class LoginForm extends StatelessWidget {
                       height: 20 * 2,
                     ),
                     ElevatedButton(
-                        child: const Text('Se connecter',
-                            style: TextStyle(fontSize: 18)),
+                      child: const Text('Se connecter',style: TextStyle(fontSize: 18)),
                         onPressed: () async {
                           if (_loginFormKey.currentState != null &&
                               _loginFormKey.currentState!.validate()) {
                             try {
                               await FirebaseAuth.instance
                                   .signInWithEmailAndPassword(
-                                      email: _email, password: _password)
+                                  email: _email, password: _password)
                                   .then((value) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -145,10 +138,10 @@ class LoginForm extends StatelessWidget {
                             } on FirebaseAuthException catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
+
                                     content: Text(
                                       errors[e.code]!,
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                     ),
                                     backgroundColor: Colors.redAccent),
                               );

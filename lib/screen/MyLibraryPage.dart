@@ -66,6 +66,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
         _ownedSeries.add(ownedSerie);
       }
     }
+    // _ownedSeries.addAll(allExistingSeries);
   }
 
   @override

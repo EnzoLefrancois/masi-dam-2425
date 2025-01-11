@@ -1,12 +1,7 @@
-import 'package:manga_library/main.dart';
-
-import 'package:manga_library/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
-
-import 'login.dart';
+import 'package:manga_library/screen/login/login.dart';
 
 
 void main() => runApp(const Options());
@@ -55,9 +50,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget textButtonTheme()
   {
     if(!themeClair) {
-      return Row(
+      return const Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
             Icon(Icons.sunny),
             Padding(
               padding: EdgeInsets.only(left: 8.0),
@@ -66,9 +61,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
         ],
       );//
     } else {
-      return Row(
+      return const Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Icon(Icons.nightlight_round_sharp),
           Padding(
             padding: EdgeInsets.only(left: 8.0),
@@ -101,24 +96,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       onTap: () {
                       // Traitez l'option 2 ici
                       },
-                      trailing: Row(
+                      trailing: const Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
+                        children: [
                           Text("Français"),
                           Padding(
                             padding: EdgeInsets.only(left: 8.0),
                             child: Icon(Icons.arrow_right),
                           )
                         ],
-                      ),
-                    ),
-                    ListTile(
-                      title: const Text("Version"),
-                      onTap: () {
-                      },
-                      trailing: const Padding(
-                        padding: EdgeInsets.only(right: 8.0),
-                        child: Text("1.0"),
                       ),
                     ),
                   ListTile(
@@ -129,10 +115,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                         builder: (BuildContext context) {
                           return SimpleDialog(
                             children: <Widget>[
-                              Column(
+                              const Column(
 
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
+                                children: [
                                   Padding(
                                     padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
                                     child: Text("Êtes-vous sûr de vouloir vous déconnecter et quitter ?"),
@@ -159,8 +145,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
                       );
                     },
                   ),
+                  const Divider(),
+                  const ListTile(
+                    title: Text("Version"),
+                    subtitle: Text("1.0"),
+                  ),
                 ],
+
         )
+
 
         /*Column(
           mainAxisAlignment: MainAxisAlignment.center,

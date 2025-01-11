@@ -20,7 +20,7 @@ Future<List<Serie>> getAllSerieFromFirestore() async {
         Serie serie = Serie.fromJson(mangaData, mangaName);
         // Parcourir chaque champ 'Vol' du document correspond au different tome
         mangaData.forEach((key, value) {
-          if (key.startsWith('Vol.')) {
+          if (key.startsWith('Vol')) {
             Map<String, dynamic> volumeData = value as Map<String, dynamic>;
             Tome tome = Tome.fromJson(volumeData, mangaName);
             serie.addTome(tome);

@@ -1,40 +1,33 @@
-import 'dart:convert';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:csv/csv.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart';
-import 'package:manga_library/model/tome.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
-import 'package:manga_library/screen/login/options.dart';
-import 'package:manga_library/service/firestore_service.dart';
 import 'list.dart';
-import 'model/my_books.dart';
 import './routes.dart';
 
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
-import 'package:provider/provider.dart';
+import 'service/firestore_service.dart';
+import 'screen/options.dart';
+
+
 
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Nécessaire pour les appels async dans `main`
+  WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   static const String _title = 'Manga Vault';
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,22 +41,29 @@ class MyApp extends StatelessWidget {
       '/resetPassword': customRoutes['/resetPassword']!,
     };
 
-    if (user == null) {
+    if(user == null)
+    {
       return MaterialApp(
         title: 'Manga Vault',
+
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
+
         routes: limitedRoutes,
         initialRoute: '/login',
+
         debugShowCheckedModeBanner: false,
       );
-    } else {
+    }
+    else{
       return MaterialApp(
         theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true
+        ),
+
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -75,9 +75,11 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
         ],
         routes: customRoutes,
+
         debugShowCheckedModeBanner: false,
         title: _title,
         initialRoute: '/',
+
       );
     }
   }
@@ -139,6 +141,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -175,8 +178,7 @@ class _MyHomePageState extends State<MyHomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(Icons.favorite),
-            label: AppLocalizations.of(context)!
-                .wishlist, // Accès direct aux localisations
+            label: AppLocalizations.of(context)!.wishlist, // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
