@@ -1,5 +1,9 @@
 # Mon Application
 
+Java 17
+Android SDK 33
+
+
 > Vous vous adressez potentiellement à un futur employeur et donc une personne qui n'aura pas nécessairement l'occasion de compiler votre projet. Votre `README.md` contiendra donc au moins :
 
 ## 📁 Présentation des Principaux Dossiers
