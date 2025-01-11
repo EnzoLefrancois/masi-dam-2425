@@ -3,83 +3,70 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:manga_library/model/tome.dart';
 import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/service/firestore_service.dart';
 
-import '../model/book.dart';
-import '../model/series.dart';
+import '../model/serie.dart';
 
 class MyLibrarypage extends StatefulWidget {
-  const MyLibrarypage({super.key, required this.allBooks});
+  const MyLibrarypage({super.key, required this.allSeries});
 
-  final List<Series> allBooks;
+  final List<Serie> allSeries;
 
   @override
   State<MyLibrarypage> createState() => _MyLibraryPageState();
 }
 
 class _MyLibraryPageState extends State<MyLibrarypage> {
-  TextEditingController searchController =
-      TextEditingController(); // Contrôleur pour la recherche
+  TextEditingController searchController = TextEditingController();
+  FocusNode searchFocus = FocusNode();
   late Future<bool> _hasData;
-  late List<Book> _ownedBooks;
-  late List<Series> _filteredOwnedBooksLibrabrys;
-  late List<Series> _ownedMainBook;
 
   int _selectedFilter = -1;
   int _selectedSort = -1;
 
+  late List<OwnedTome> _userOwnedTomeIsbn;
+  final List<Serie> _ownedSeries = [];
+  late List<Serie> _filterOwnedSeries;
+
   Future<bool> _loadData() async {
-    // todo get owned books from api
-    final rawData = await rootBundle.loadString('assets/mybooks.json');
-    // ignore: use_build_context_synchronously
-    MyBooks myBooks = MyBooks.fromJson(jsonDecode(rawData), context);
-    _ownedBooks = myBooks.books ?? [];
-    _ownedMainBook = _ownedBooks.isEmpty ? [] : _chargeMainBooks();
-    _filteredOwnedBooksLibrabrys = _ownedMainBook;
+    try {
+      MyBooks allOwnedTome = await getUsersAllOwnedBooks();
+      _userOwnedTomeIsbn = allOwnedTome.books!;
 
-    return true;
-  }
-
-  List<Series> _chargeMainBooks() {
-    List<Series> masterBooks = [];
-    List<Series> allBooks = widget.allBooks;
-
-    for (var ownedBook in _ownedBooks) {
-      Series? masterBook = allBooks.firstWhere((book) {
-        // mettre en miniscule, enlever tout les espaces, garder que les caractere
-        return book.title!
-                .toLowerCase()
-                .replaceAll(' ', '')
-                .replaceAll(RegExp(r'[^\w\s]+'), '') ==
-            ownedBook.mainTitle!
-                .toLowerCase()
-                .replaceAll(' ', '')
-                .replaceAll(RegExp(r'[^\w\s]+'), '');
-      },
-          orElse: () => Series(
-              title: ownedBook.mainTitle,
-              cover: ownedBook.cover,
-              readingStatus: ownedBook.readingStatus,
-              nbBooks: 1));
-
-      int index = masterBooks.indexOf(masterBook);
-
-      if (index != -1) {
-        masterBooks[index].nbOwnedBook++;
-        if (ownedBook.readingStatus ==
-            AppLocalizations.of(context)!.currentlyReading) {
-          masterBook.readingStatus = ownedBook.readingStatus;
-        }
-      } else {
-        masterBook.nbOwnedBook = 1;
-        masterBook.readingStatus = ownedBook.readingStatus;
-        masterBooks.add(masterBook);
+      if (_userOwnedTomeIsbn.isNotEmpty) {
+        _setOwned();
       }
 
-      masterBook.addBook(ownedBook);
-    }
+      _filterOwnedSeries = _ownedSeries;
 
-    return masterBooks;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  void _setOwned() {
+    List<Serie> allExistingSeries = widget.allSeries;
+    for (var ownedIsbn in _userOwnedTomeIsbn) {
+      Serie? ownedSerie = allExistingSeries.firstWhere((serie) {
+        return serie.serieId! == ownedIsbn.serieId;
+      });
+
+      int index = _ownedSeries.indexOf(ownedSerie);
+      if (index != -1) {
+        _ownedSeries[index].nbOwnedTomes++;
+        if (ownedIsbn.readingStatus! == 1) {
+          ownedSerie.reading_status = 1;
+        }
+      } else {
+        ownedSerie.nbOwnedTomes = 1;
+        ownedSerie.reading_status = ownedIsbn.readingStatus!;
+        _ownedSeries.add(ownedSerie);
+      }
+    }
+    // _ownedSeries.addAll(allExistingSeries);
   }
 
   @override
@@ -90,35 +77,37 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _searchSide(),
-        FutureBuilder(
-            future: _hasData,
-            builder: (context, snapshot) {
-              if (!snapshot.hasData) {
-                return const Expanded(
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-              return Expanded(
-                  child: _ownedBooks.isEmpty
-                      ? Text(AppLocalizations.of(context)!.libraryEmpty)
-                      : _listSide());
-            }),
-      ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: Column(
+        children: [
+          _searchSide(),
+          FutureBuilder(
+              future: _hasData,
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Expanded(
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                return Expanded(
+                    child: _ownedSeries.isEmpty
+                        ? Text(AppLocalizations.of(context)!.libraryEmpty)
+                        : _listSide());
+              }),
+        ],
+      ),
     );
   }
 
   void _filterTitles(String query) {
     setState(() {
       if (query.isEmpty) {
-        _filteredOwnedBooksLibrabrys =
-            _ownedMainBook; // Afficher tous les titres si la recherche est vide
+        _filterOwnedSeries = _ownedSeries;
       } else {
-        _filteredOwnedBooksLibrabrys = _ownedMainBook
-            .where((book) =>
-                book.title!.toLowerCase().contains(query.toLowerCase()))
+        _filterOwnedSeries = _ownedSeries
+            .where((serie) =>
+                serie.name!.toLowerCase().contains(query.toLowerCase()))
             .toList();
       }
     });
@@ -131,11 +120,12 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
         Expanded(
           child: TextField(
             controller: searchController,
+            focusNode: searchFocus,
             decoration: InputDecoration(
               labelText: AppLocalizations.of(context)!.searchManga,
               border: const OutlineInputBorder(),
             ),
-            onChanged: _filterTitles, // Filtrer les titres lors de la saisie
+            onChanged: _filterTitles,
           ),
         ),
         const SizedBox(
@@ -144,25 +134,19 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
         PopupMenuButton<int>(
           onSelected: (value) {
             setState(() {
-              _filteredOwnedBooksLibrabrys = _ownedMainBook;
+              _filterOwnedSeries = _ownedSeries;
               if (_selectedFilter == value) {
                 _selectedFilter = -1;
               } else {
                 _selectedFilter = value;
                 if (_selectedSort == 0) {
-                  _filteredOwnedBooksLibrabrys
-                      .sort((a, b) => a.title!.compareTo(b.title!));
+                  _filterOwnedSeries.sort((a, b) => a.name!.compareTo(b.name!));
                 } else if (_selectedSort == 1) {
-                  _filteredOwnedBooksLibrabrys
-                      .sort((b, a) => a.title!.compareTo(b.title!));
+                  _filterOwnedSeries.sort((b, a) => a.name!.compareTo(b.name!));
                 }
                 if (value == 0) {
-                  _filteredOwnedBooksLibrabrys = _filteredOwnedBooksLibrabrys
-                      .where((book) =>
-                          book.readingStatus!.toLowerCase() ==
-                          (AppLocalizations.of(context)!
-                              .currentlyReading
-                              .toLowerCase()))
+                  _filterOwnedSeries = _filterOwnedSeries
+                      .where((serie) => serie.reading_status == 1)
                       .toList();
                 }
               }
@@ -180,11 +164,11 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               color: Theme.of(context).colorScheme.inversePrimary,
               shape: const CircleBorder(),
             ),
-            padding: const EdgeInsets.all(10), // Espace autour de l'icône
+            padding: const EdgeInsets.all(10),
             child: const Icon(
               Icons.filter_list,
               size: 25,
-              color: Colors.white, // Couleur de l'icône
+              color: Colors.white,
             ),
           ),
         ),
@@ -194,26 +178,20 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
         PopupMenuButton<int>(
           onSelected: (value) {
             setState(() {
-              _filteredOwnedBooksLibrabrys = _ownedMainBook;
+              _filterOwnedSeries = _ownedSeries;
               if (_selectedSort == value) {
                 _selectedSort = -1;
               } else {
                 _selectedSort = value;
                 if (_selectedFilter == 0) {
-                  _filteredOwnedBooksLibrabrys = _filteredOwnedBooksLibrabrys
-                      .where((book) =>
-                          book.readingStatus!.toLowerCase() ==
-                          (AppLocalizations.of(context)!
-                              .currentlyReading
-                              .toLowerCase()))
+                  _filterOwnedSeries = _filterOwnedSeries
+                      .where((serie) => serie.reading_status == 1)
                       .toList();
                 }
                 if (value == 0) {
-                  _filteredOwnedBooksLibrabrys
-                      .sort((a, b) => a.title!.compareTo(b.title!));
+                  _filterOwnedSeries.sort((a, b) => a.name!.compareTo(b.name!));
                 } else {
-                  _filteredOwnedBooksLibrabrys
-                      .sort((b, a) => a.title!.compareTo(b.title!));
+                  _filterOwnedSeries.sort((b, a) => a.name!.compareTo(b.name!));
                 }
               }
             });
@@ -235,11 +213,11 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               color: Theme.of(context).colorScheme.inversePrimary,
               shape: const CircleBorder(),
             ),
-            padding: const EdgeInsets.all(10), // Espace autour de l'icône
+            padding: const EdgeInsets.all(10),
             child: const Icon(
               Icons.sort_by_alpha_outlined,
               size: 25,
-              color: Colors.white, // Couleur de l'icône
+              color: Colors.white,
             ),
           ),
         ),
@@ -263,7 +241,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
-          if (isSelected) // Ajoute une icône pour indiquer la sélection
+          if (isSelected)
             Icon(Icons.check, color: Theme.of(context).colorScheme.primary),
         ],
       ),
@@ -274,17 +252,20 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListView.builder(
-        itemCount: _filteredOwnedBooksLibrabrys.length,
+        itemCount: _filterOwnedSeries.length,
         itemBuilder: (_, index) {
+          List<OwnedTome> ownedTomeOfCurrentSeries =
+              _userOwnedTomeIsbn.where((owned) {
+            return owned.serieId == _filterOwnedSeries[index].serieId;
+          }).toList();
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
             child: InkWell(
               onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  '/series-details',
-                  arguments: _filteredOwnedBooksLibrabrys[index],
-                );
+                Navigator.pushNamed(context, '/series-details', arguments: {
+                  'serie': _filterOwnedSeries[index],
+                  'ownedTomes': ownedTomeOfCurrentSeries
+                });
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -301,7 +282,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                         ),
                         padding: const EdgeInsets.all(4.0),
                         child: Image.network(
-                          _filteredOwnedBooksLibrabrys[index].cover!,
+                          _filterOwnedSeries[index].mainCover!,
                           width: 100,
                           height: 150,
                         ),
@@ -314,17 +295,20 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              _filteredOwnedBooksLibrabrys[index].title!,
+                              _filterOwnedSeries[index].name!,
                               style: const TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 24),
                             ),
                             Text(
-                              '${_filteredOwnedBooksLibrabrys[index].nbOwnedBook}/${_filteredOwnedBooksLibrabrys[index].nbBooks} ${AppLocalizations.of(context)!.tome}',
+                              '${_filterOwnedSeries[index].nbOwnedTomes}/${_filterOwnedSeries[index].nbVolume} ${AppLocalizations.of(context)!.tome}',
                               style: const TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 16),
                             ),
                             Text(
-                              '${_filteredOwnedBooksLibrabrys[index].readingStatus}',
+                              _filterOwnedSeries[index].reading_status == 1
+                                  ? AppLocalizations.of(context)!
+                                      .currentlyReading
+                                  : "",
                               style: const TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 14),
                             ),

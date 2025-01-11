@@ -1,14 +1,17 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:manga_library/model/book.dart';
-import 'package:manga_library/model/series.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/model/serie.dart';
+import 'package:manga_library/model/tome.dart';
+import 'package:manga_library/service/firestore_service.dart';
 
 class TomeDetailPage extends StatefulWidget {
-  final Book tome;
-  final Series serie;
-  const TomeDetailPage({super.key, required this.tome, required this.serie});
+  final Tome tome;
+  final Serie serie;
+  final List<OwnedTome> ownedTome;
+  const TomeDetailPage({super.key, required this.tome, required this.serie, required this.ownedTome});
 
   @override
   State<TomeDetailPage> createState() => _TomeDetailPageState();
@@ -16,6 +19,30 @@ class TomeDetailPage extends StatefulWidget {
 
 //readingStatus empty
 class _TomeDetailPageState extends State<TomeDetailPage> {
+  late bool _isOwned;
+  late int _reading_status;
+  bool _isWish = false;
+  bool _loadingOwn = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _isOwned = widget.ownedTome.any((tome) {
+      bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
+      return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
+    });
+    if (_isOwned) {
+      _reading_status = widget.ownedTome.firstWhere((tome) {
+        bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
+        return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
+      }).readingStatus!;
+    } else {
+      _reading_status = 0;
+    }
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,20 +81,20 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
-                widget.tome.mainTitle!,
+                widget.tome.seriesName!,
                 style:
                     const TextStyle(fontWeight: FontWeight.w700, fontSize: 25),
               ),
               Text(
-                widget.tome.title!,
+                widget.tome.tomeName!,
                 style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 22,
                     color: Colors.grey),
               ),
-              if (widget.tome.readingStatus!.isNotEmpty)
+              if (_reading_status == 1)
                 Text(
-                  widget.tome.readingStatus!,
+                  AppLocalizations.of(context)!.currentlyReading,
                   style: TextStyle(
                       fontWeight: FontWeight.w400,
                       fontSize: 18,
@@ -117,7 +144,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                 width: 12,
               ),
               Text(
-                'ISBN : ${widget.tome.iSBN!}',
+                'ISBN : ${widget.tome.isbn13!}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
                 ),
@@ -146,7 +173,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
             height: 12,
           ),
           Text(
-            widget.tome.synopsis!,
+            widget.tome.synopsis ?? AppLocalizations.of(context)!.detailTomeNoSummary,
             style: TextStyle(color: Colors.grey.shade800),
           ),
         ]),
@@ -161,7 +188,10 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
           Navigator.pushNamed(
             context,
             '/series-details',
-            arguments: widget.serie,
+            arguments: {
+              'serie' : widget.serie,
+              'ownedTomes' : widget.ownedTome
+            }
           );
         },
         label: Text(
@@ -193,44 +223,95 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
   Widget _buttonBuilder(BuildContext context) {
     return Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          ElevatedButton.icon(
-            onPressed: () {
-              print("button pressed..");
-            },
-            icon: const Icon(
-              Icons.favorite_border,
-              size: 20,
-            ),
-            label: Text(
-              AppLocalizations.of(context)!.detailTomeWish,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                  color: Colors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green.shade200,
-              iconColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
+          if (!_isOwned)
+            ElevatedButton.icon(
+              onPressed: () {
+                print("button pressed..");
+              },
+              icon: Icon(
+                _isWish ? Icons.favorite_border : Icons.favorite,
+                size: 20,
+              ),
+              label: Text(
+                _isWish ? AppLocalizations.of(context)!.detailTomeWish : AppLocalizations.of(context)!.detailTomeNotWish,
+                style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                    color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade200,
+                iconColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            width: 12,
-          ),
-          ElevatedButton.icon(
-            onPressed: () {
-              print('Button pressed ...');
+          if (!_isOwned)
+            const SizedBox(
+              width: 12,
+            ),
+          _loadingOwn ?
+              CircularProgressIndicator()
+          : ElevatedButton.icon(
+            onPressed: () async {
+              setState(() {
+                _loadingOwn = true;
+              });
+
+              if (_isOwned) {
+                OwnedTome ownedTome = widget.ownedTome.firstWhere((tome) {
+                  bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
+                  return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
+                });
+                bool isRemoved = await removeTomeToOwnedList(ownedTome);
+                setState(() {
+                  if (isRemoved) {
+                    widget.ownedTome.remove(ownedTome);
+                    _isOwned = false;
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              "Une erreur s'est produite lors de la suppresion du livre dans la base de données, veuillez ressayer")
+                      ),
+                    );
+                  }
+                  _loadingOwn = false;
+                });
+              } else {
+                OwnedTome newOwned = OwnedTome(
+                    isbn: widget.tome.isbn13 ?? widget.tome.isbn10,
+                    readingStatus: 0,
+                    serieId: widget.serie.serieId
+                );
+                bool isAdded = await addTomeToOwnedList(newOwned);
+                setState(() {
+                  if (isAdded) {
+                    widget.ownedTome.add(newOwned);
+                    _isOwned = true;
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              "Une erreur s'est produite lors de l'ajout du livre dans la base de données, veuillez ressayer")
+                      ),
+                    );
+                  }
+                  _loadingOwn = false;
+                });
+              }
+
+
             },
-            icon: const Icon(
-              Icons.check,
+            icon: Icon(
+              _isOwned ?  Icons.check : Icons.add,
               size: 20,
             ),
             label: Text(
-              AppLocalizations.of(context)!.detailTomeOwn,
+              _isOwned ? AppLocalizations.of(context)!.detailTomeOwn : AppLocalizations.of(context)!.detailTomeNotOwn,
               style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
@@ -244,41 +325,62 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
               ),
             ),
           ),
-          const SizedBox(
-            width: 12,
-          ),
-          IconButton(
-            onPressed: () {
-              setState(() {
-                if (widget.tome.readingStatus!.isNotEmpty) {
-                  widget.tome.readingStatus = "";
-                } else {
-                  widget.tome.readingStatus =
-                      AppLocalizations.of(context)!.currentlyReading;
-                }
-              });
-            },
-            icon: Icon(
-              widget.tome.readingStatus!.isNotEmpty
-                  ? Icons.pause
-                  : Icons.play_arrow,
-              size: 20,
+          if (_isOwned)
+            const SizedBox(
+              width: 12,
             ),
-            // label: Text(
-            //   'Lecture',
-            //   style: const TextStyle(
-            //       fontWeight: FontWeight.bold,
-            //       fontSize: 18,
-            //       color: Colors.white),
-            // ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange.shade200,
-              iconColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
+          if (_isOwned)
+            IconButton(
+              onPressed: () async {
+                OwnedTome ownedTome = widget.ownedTome.firstWhere((tome) {
+                  bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
+                  return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
+                });
+                var newStatus = _reading_status == 0 ? 1 : 0;
+
+                bool isUpdate = await updateTomeReadingStatus(ownedTome.isbn!, newStatus);
+                setState(() {
+                  if (isUpdate) {
+                    for (var tome in widget.ownedTome) {
+                      bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
+                      if (is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10){
+                        _reading_status =newStatus;
+                        tome.readingStatus = _reading_status;
+                        break;
+                      }
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                          content: Text(
+                              "Une erreur s'est produite lors de l'ajout du livre dans la base de données, veuillez ressayer")
+                      ),
+                    );
+                  }
+                });
+
+              },
+              icon: Icon(
+                _reading_status == 1
+                    ? Icons.pause
+                    : Icons.play_arrow,
+                size: 20,
+              ),
+              // label: Text(
+              //   'Lecture',
+              //   style: const TextStyle(
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 18,
+              //       color: Colors.white),
+              // ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange.shade200,
+                iconColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
             ),
-          ),
         ]);
   }
 

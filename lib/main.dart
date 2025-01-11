@@ -1,53 +1,90 @@
-import 'dart:convert';
-
-import 'package:csv/csv.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:manga_library/model/authors.dart';
+import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
+import 'package:manga_library/screen/options.dart';
 import 'list.dart';
-import 'model/my_books.dart';
-import 'model/series.dart';
 import './routes.dart';
+
+import 'service/firestore_service.dart';
+import 'screen/options.dart';
+
+
 
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
+  WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
+  await Firebase.initializeApp(); // Initialisation de Firebase
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static const String _title = 'Manga Vault';
+
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Manga Vault',
+    FirebaseAuth.instance.setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
 
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'), // English
-        Locale('fr'), // Spanish
-      ],
+    User? user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
 
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+    final limitedRoutes = <String, WidgetBuilder>{
+      '/login': customRoutes['/login']!,
+      '/register': customRoutes['/register']!,
+      '/main': customRoutes['/main']!,
+      '/resetPassword': customRoutes['/resetPassword']!,
+    };
 
-      routes: customRoutes,
-      initialRoute: '/',
+    if(user == null)
+    {
+      return MaterialApp(
+        title: 'Manga Vault',
 
-      debugShowCheckedModeBanner: false,
-    );
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+
+        routes: limitedRoutes,
+        initialRoute: '/login',
+
+        debugShowCheckedModeBanner: false,
+      );
+    }
+    else{
+      return MaterialApp(
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true
+        ),
+
+        localizationsDelegates: const [
+          AppLocalizations.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en'), // English
+          Locale('fr'), // French
+        ],
+        routes: customRoutes,
+
+        debugShowCheckedModeBanner: false,
+        title: _title,
+        initialRoute: '/',
+
+      );
+    }
   }
 }
 
@@ -62,78 +99,34 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0; // Variable pour gérer l'index de la page sélectionnée
-  final PageController _pageController = PageController(); // Pour la gestion du swipe
-  List<String> mangaTitles = []; // Liste pour stocker les titres des mangas
-  List<Series> allMangaLibrary = [];
+  final PageController _pageController =
+      PageController(); // Pour la gestion du swipe
 
   // Liste des pages de l'application
-  final List<Widget> _pages = [];
+  late Future<List<Widget>> _pages;
 
   @override
   void initState() {
     super.initState();
-    loadCSV(); // Charger le fichier CSV au démarrage
+    _pages = _loadData(); // Charger le fichier CSV au démarrage
   }
 
   // Charger et parser le fichier CSV
-  Future<void> loadCSV() async {
-    // Charger le fichier manga.csv depuis les assets
-    final rawData = await rootBundle.loadString('assets/manga.csv');
+  Future<List<Widget>> _loadData() async {
+    List<Serie> allSeries = await getAllSerieFromFirestore();
+    List<String> mangaTitles = allSeries.map((row) => row.name!).toList();
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+    getUserWishlist(userid);
+    getFriendWishlist();
 
-    // Parser le CSV
-    List<List<dynamic>> list = CsvToListConverter().convert(rawData);
-
-    // Trouver l'index des colonnes "title" et "type"
-    final titleIndex = list[0].indexOf('title');
-    final typeIndex = list[0].indexOf('type');
-
-    final coverIndex = list[0].indexOf('main_picture');
-    final volumeIndex = list[0].indexOf('volumes');
-    final genresIndex = list[0].indexOf('genres');
-    final authorsIndex = list[0].indexOf('authors');
-
-    // Extraire les titres des mangas dont le type est "manga"
-    setState(() {
-      mangaTitles = list
-          .skip(1) // On saute la première ligne (en-têtes)
-          .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
-          .map((row) => row[titleIndex].toString()) // Convertir chaque titre en chaîne
-          .toList();
-      allMangaLibrary = list
-          .skip(1) // On saute la première ligne (en-têtes)
-          .where((row) => row[typeIndex] == 'manga') // Filtrer les lignes où "type" est égal à "manga"
-          .map((row)  {
-            // categorie
-            String genres = row[genresIndex].toString();
-            String cleanedData = genres.replaceAll("[", "").replaceAll("]", "").replaceAll("'", "");
-            List<String> genreList = cleanedData.split(", ").map((e) => e.trim()).toList();
-
-            // auteurs
-            List<Authors> authorsList = [];
-            try {
-              String authorsString = row[authorsIndex].toString();
-              authorsString = authorsString.replaceAll("'", '"');
-              List<dynamic> jsonList = jsonDecode(authorsString);
-              authorsList = jsonList.map((json) => Authors.fromJson(json)).toList();
-            } on Exception catch (_) {
-            }
-            return Series(
-                title:  row[titleIndex].toString().trim().isEmpty ? "" : row[titleIndex].toString().trim(),
-                cover:  row[coverIndex].toString(),
-                genresList: genreList,
-                authorsList: authorsList,
-                nbBooks: int.tryParse(row[volumeIndex].toString().trim().isEmpty ? "0" : row[volumeIndex].toString().trim()) ?? 0 );
-      } )
-          .toList();
-    });
-
-    // Mettre à jour les pages après avoir chargé les titres
-    _pages.addAll([
-      const Center(child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
-      MyLibrarypage(allBooks: allMangaLibrary),
-      MySearchPage(titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      const Center(child: Text("TODO : SETTINGS", style: TextStyle(fontSize: 30))),
-    ]);
+    return [
+      const Center(
+          child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
+      MyLibrarypage(allSeries: allSeries),
+      MySearchPage(
+          titles: mangaTitles), // Passer la liste des titres à MySearchPage
+      const Options()
+    ];
   }
 
   // Fonction pour changer la page via le BottomNavigationBar
@@ -151,6 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -158,12 +152,26 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: _pages.isEmpty
-          ? const Center(child: CircularProgressIndicator())
-          : PageView(
-        controller: _pageController,
-        onPageChanged: _onPageChanged,
-        children: _pages,
+      body: FutureBuilder(
+        future: _pages,
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            if (snapshot.data!.isEmpty) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            return PageView(
+              controller: _pageController,
+              onPageChanged: _onPageChanged,
+              children: snapshot.data!,
+            );
+          }
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
@@ -173,19 +181,22 @@ class _MyHomePageState extends State<MyHomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(Icons.favorite),
-            label: AppLocalizations.of(context)!.wishlist,
+            label: AppLocalizations.of(context)!.wishlist, // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
-            label: AppLocalizations.of(context)!.library,
+            label: AppLocalizations.of(context)!
+                .library, // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.search),
-            label: AppLocalizations.of(context)!.search,
+            label: AppLocalizations.of(context)!
+                .search, // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.settings),
-            label: AppLocalizations.of(context)!.settings,
+            label: AppLocalizations.of(context)!
+                .settings, // Accès direct aux localisations
           ),
         ],
       ),

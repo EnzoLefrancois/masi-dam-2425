@@ -10,17 +10,18 @@
     "sortByNameDescending": "Sort by name Z-A",
 
     "categories": "Categories",
-    "contributors": "Contributors",
+    "author": "Author",
     "edition": "Edition",
     "tome": "Tome",
-    "unknowTitle": "Unknow Title",
+    "unknowTitle": "Unknown Title",
 
     "libraryEmpty": "No book in library",
 
-    "detailTomeWish" : "Whish",
-    "detailTomeNotWish" : "Not wish",
+    "detailTomeWish" : "Wish",
+    "detailTomeNotWish" : "Wished",
     "detailTomeOwn" : "Owned",
     "detailTomeNotOwn" : "Not owned",
     "detailTomeAllCollectionButton" : "See all collection",
-    "detailTomeSynopsis" : "Synopsis"
+    "detailTomeSynopsis" : "Summary",
+    "detailTomeNoSummary" : "No summary"
 }

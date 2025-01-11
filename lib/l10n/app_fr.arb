@@ -10,7 +10,7 @@
     "sortByNameDescending": "Tri sur le nom Z-A",
 
     "categories": "Catégories",
-    "contributors": "Contributeurs",
+    "author": "Auteur",
     "edition": "Éditions",
     "tome": "Tome",
     "unknowTitle": "Titre inconnu",
@@ -18,9 +18,10 @@
     "libraryEmpty" : "Pas de livre dans votre Bibliothèque",
 
     "detailTomeWish" : "Souhaite",
-    "detailTomeNotWish" : "Souhaite Plus",
+    "detailTomeNotWish" : "Souhaité",
     "detailTomeOwn" : "Posséde",
     "detailTomeNotOwn" : "Posséde Pas",
     "detailTomeAllCollectionButton" : "Voir la collection complète",
-    "detailTomeSynopsis" : "Résumé"
+    "detailTomeSynopsis" : "Résumé",
+    "detailTomeNoSummary" : "Pas de résumé"
 }

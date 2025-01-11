@@ -1,13 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:manga_library/model/series.dart';
+import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/model/serie.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:manga_library/model/tome.dart';
 
-class SeriesDetailsPage extends StatelessWidget {
-  final Series series;
-  const SeriesDetailsPage({super.key, required this.series});
+class SeriesDetailsPage extends StatefulWidget {
+  final Serie series;
+  final List<OwnedTome> ownedTome;
+  const SeriesDetailsPage(
+      {super.key, required this.series, required this.ownedTome});
+
+  @override
+  State<SeriesDetailsPage> createState() => _SeriesDetailsPageState();
+}
+
+class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
+
+  bool _filterOwned = false;
+  bool _filterAscending = true;
+
+  late List<Tome> _filterListTome;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.series.tomes!.sort((a, b) {
+      return a.key!.compareTo(b.key!);
+    });
+
+    _filterListTome = widget.series.tomes!;
+
+  }
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: _appBarBuilder(context),
       body: _bodyBuilder(context),
@@ -24,7 +51,7 @@ class SeriesDetailsPage extends StatelessWidget {
             Row(
               children: [
                 Image.network(
-                  series.cover!,
+                  widget.series.mainCover!,
                   width: 100,
                   height: 150,
                 ),
@@ -60,7 +87,7 @@ class SeriesDetailsPage extends StatelessWidget {
 
   Widget _buildHeaderSection(context) {
     return Text(
-      series.title!,
+      widget.series.name!,
       style: const TextStyle(
           fontWeight: FontWeight.bold, fontSize: 24, letterSpacing: 0),
     );
@@ -88,7 +115,7 @@ class SeriesDetailsPage extends StatelessWidget {
 
   List<Widget> _getGenresWidget() {
     List<Widget> widgetList = [];
-    for (var genre in series.genresList!) {
+    for (var genre in widget.series.categories!) {
       widgetList.add(
         Container(
           decoration: BoxDecoration(
@@ -115,7 +142,7 @@ class SeriesDetailsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.contributors,
+        Text(AppLocalizations.of(context)!.author,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
         Wrap(
             spacing: 8,
@@ -133,34 +160,27 @@ class SeriesDetailsPage extends StatelessWidget {
 
   List<Widget> _getAuthorsWidget() {
     List<Widget> widgetList = [];
-    for (var author in series.authorsList!) {
-      widgetList.add(
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[600],
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: 10, vertical: 5),
-            child: Column(
-              children: [
-                Text(
-                  author.fullName,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  author.role,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w300),
-                ),
-              ],
-            ),
+    widgetList.add(
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[600],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 10, vertical: 5),
+          child: Column(
+            children: [
+              Text(
+                widget.series.author!,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w500),
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
 
     return widgetList;
   }
@@ -169,11 +189,59 @@ class SeriesDetailsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.edition,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
-        Text('${series.nbBooks!} ${AppLocalizations.of(context)!.tome}',
-            style: const TextStyle(
-                fontWeight: FontWeight.w500, fontSize: 18, color: Colors.grey)),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              children: [
+                Text(AppLocalizations.of(context)!.edition,
+                  style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
+                Text('${widget.series.nbVolume!} ${AppLocalizations.of(context)!.tome}',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w500, fontSize: 18, color: Colors.grey)),
+              ]
+            ),
+            CheckboxMenuButton(
+                value: _filterOwned,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _filterOwned = !_filterOwned;
+                    if (_filterOwned) {
+                      _filterListTome = [];
+                      _filterListTome.addAll( widget.series.tomes!.where((t) {
+                        return widget.ownedTome.any((o) {
+                          bool is13 = o.isbn!.trim().replaceAll("-", "").length == 13;
+                          return  is13 ? o.isbn == t.isbn13 : o.isbn == t.isbn10;
+                          });
+                        }
+                      ).toList());
+                    } else {
+                      _filterListTome = widget.series.tomes!;
+                    }
+                  });
+                  },
+                child: Text(AppLocalizations.of(context)!.detailTomeOwn)),
+            PopupMenuButton<int>(
+              icon: const Icon(Icons.sort_by_alpha_rounded),
+              onSelected: (value) {
+                setState(() {
+                  if (value == 0) {
+                    _filterAscending = true;
+                    _filterListTome.sort((a, b) => a.key!.compareTo(b.key!));
+
+                  } else {
+                    _filterAscending = false;
+                    _filterListTome.sort((a, b) => b.key!.compareTo(a.key!));
+
+                  }
+                });
+              },
+              itemBuilder: (context) => [
+                _buildMenuItem(context,0, AppLocalizations.of(context)!.sortByNameAscending,_filterAscending),
+                _buildMenuItem(context,1, AppLocalizations.of(context)!.sortByNameDescending,!_filterAscending),
+                ]
+            ),
+       ]),
         const SizedBox(
           height: 10,
         ),
@@ -182,41 +250,95 @@ class SeriesDetailsPage extends StatelessWidget {
     );
   }
 
+  PopupMenuItem<int> _buildMenuItem(
+      BuildContext context, int value, String text, bool isSelected) {
+    return PopupMenuItem<int>(
+      value: value,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            text,
+            style: TextStyle(
+              color: isSelected
+                  ? Theme
+                  .of(context)
+                  .colorScheme
+                  .primary
+                  : Colors.black,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+          if (isSelected)
+            Icon(Icons.check, color: Theme
+                .of(context)
+                .colorScheme
+                .primary),
+        ],
+      ),
+    );
+  }
+
   Widget _buildBooks() {
     return ListView.builder(
         controller: ScrollController(),
         shrinkWrap: true,
-        itemCount: series.books.length,
+        itemCount: _filterListTome.length,
         itemBuilder: (context, index) {
-          var i = NetworkImage(series.books[index].cover!,
+          var i = NetworkImage(_filterListTome[index].cover!,
               headers: {'Access-Control-Allow-Origin': '*'});
-          var fullTitle = series.books[index].title ??
+          var fullTitle = _filterListTome[index].tomeName ??
               AppLocalizations.of(context)!.unknowTitle;
           String title, tome;
-          if (fullTitle.contains(' - ')) {
-            var parts = fullTitle.split(' - ');
-            title = parts[0];
-            tome = parts.length > 1 ? parts[1] : '';
-          } else {
-            title = fullTitle;
-            tome = '';
+          // if (fullTitle.contains(' - ')) {
+          //   var parts = fullTitle.split(' - ');
+          //   title = parts[0];
+          //   tome = parts.length > 1 ? parts[1] : '';
+          // } else {
+          //   title = fullTitle;
+          //   tome = '';
+          // }
+          title = fullTitle;
+
+          OwnedTome? serieIsOwned;
+          try {
+            serieIsOwned = widget.ownedTome.firstWhere((element) {
+              bool is13 = element.isbn!.trim().replaceAll("-", "").length == 13;
+              return is13
+                  ? element.isbn == _filterListTome[index].isbn13
+                  : element.isbn == _filterListTome[index].isbn10;
+            });
+          } catch (e) {
+            serieIsOwned = null;
           }
-          var readingStatus = series.books[index].readingStatus!;
+
+          int readingStatus = serieIsOwned?.readingStatus ?? 0;
+
           return InkWell(
             onTap: () {
               print(title);
               Navigator.pushNamed(
                 context,
                 '/tome-details',
-                arguments: {'tome': series.books[index], 'serie': series},
+                arguments: {
+                  'tome': _filterListTome[index],
+                  'serie': widget.series,
+                  'ownedTomes': widget.ownedTome
+                },
               );
             },
             child: Container(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: 16, left: 4),
               decoration: BoxDecoration(
-                color: Colors.white60,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
+              foregroundDecoration: serieIsOwned == null
+                  ? BoxDecoration(
+                      color: Colors.black.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    )
+                  : null,
               child:
                   Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Expanded(
@@ -243,13 +365,16 @@ class SeriesDetailsPage extends StatelessWidget {
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 22),
                               ),
+                              // Text(
+                              //   tome,
+                              //   style: const TextStyle(
+                              //       fontWeight: FontWeight.w400, fontSize: 18),
+                              // ),
                               Text(
-                                tome,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w400, fontSize: 18),
-                              ),
-                              Text(
-                                readingStatus,
+                                readingStatus == 1
+                                    ? AppLocalizations.of(context)!
+                                        .currentlyReading
+                                    : "",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w200, fontSize: 16),
                               ),
