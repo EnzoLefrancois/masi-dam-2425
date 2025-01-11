@@ -1,12 +1,10 @@
+import 'package:manga_library/screen/login/login.dart';
 import 'package:manga_library/main.dart';
-
 import 'package:manga_library/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-
-import 'login/login.dart';
 
 
 void main() => runApp(const Options());

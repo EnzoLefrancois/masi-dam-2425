@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:manga_library/model/series.dart';
+import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/model/serie.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SeriesDetailsPage extends StatelessWidget {
-  final Series series;
-  const SeriesDetailsPage({super.key, required this.series});
+  final Serie series;
+  final List<OwnedTome> ownedTome;
+  const SeriesDetailsPage(
+      {super.key, required this.series, required this.ownedTome});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,7 @@ class SeriesDetailsPage extends StatelessWidget {
             Row(
               children: [
                 Image.network(
-                  series.cover!,
+                  series.mainCover!,
                   width: 100,
                   height: 150,
                 ),
@@ -60,7 +63,7 @@ class SeriesDetailsPage extends StatelessWidget {
 
   Widget _buildHeaderSection(context) {
     return Text(
-      series.title!,
+      series.name!,
       style: const TextStyle(
           fontWeight: FontWeight.bold, fontSize: 24, letterSpacing: 0),
     );
@@ -88,7 +91,7 @@ class SeriesDetailsPage extends StatelessWidget {
 
   List<Widget> _getGenresWidget() {
     List<Widget> widgetList = [];
-    for (var genre in series.genresList!) {
+    for (var genre in series.categories!) {
       widgetList.add(
         Container(
           decoration: BoxDecoration(
@@ -115,7 +118,7 @@ class SeriesDetailsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(AppLocalizations.of(context)!.contributors,
+        Text(AppLocalizations.of(context)!.author,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
         Wrap(
             spacing: 8,
@@ -133,34 +136,27 @@ class SeriesDetailsPage extends StatelessWidget {
 
   List<Widget> _getAuthorsWidget() {
     List<Widget> widgetList = [];
-    for (var author in series.authorsList!) {
-      widgetList.add(
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[600],
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsetsDirectional.symmetric(
-                horizontal: 10, vertical: 5),
-            child: Column(
-              children: [
-                Text(
-                  author.fullName,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w500),
-                ),
-                Text(
-                  author.role,
-                  style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.w300),
-                ),
-              ],
-            ),
+    widgetList.add(
+      Container(
+        decoration: BoxDecoration(
+          color: Colors.grey[600],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsetsDirectional.symmetric(
+              horizontal: 10, vertical: 5),
+          child: Column(
+            children: [
+              Text(
+                series.author!,
+                style: const TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.w500),
+              ),
+            ],
           ),
         ),
-      );
-    }
+      ),
+    );
 
     return widgetList;
   }
@@ -171,7 +167,7 @@ class SeriesDetailsPage extends StatelessWidget {
       children: [
         Text(AppLocalizations.of(context)!.edition,
             style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 20)),
-        Text('${series.nbBooks!} ${AppLocalizations.of(context)!.tome}',
+        Text('${series.nbVolume!} ${AppLocalizations.of(context)!.tome}',
             style: const TextStyle(
                 fontWeight: FontWeight.w500, fontSize: 18, color: Colors.grey)),
         const SizedBox(
@@ -186,11 +182,11 @@ class SeriesDetailsPage extends StatelessWidget {
     return ListView.builder(
         controller: ScrollController(),
         shrinkWrap: true,
-        itemCount: series.books.length,
+        itemCount: series.tomes!.length,
         itemBuilder: (context, index) {
-          var i = NetworkImage(series.books[index].cover!,
+          var i = NetworkImage(series.tomes![index].cover!,
               headers: {'Access-Control-Allow-Origin': '*'});
-          var fullTitle = series.books[index].title ??
+          var fullTitle = series.tomes![index].tomeName ??
               AppLocalizations.of(context)!.unknowTitle;
           String title, tome;
           if (fullTitle.contains(' - ')) {
@@ -201,17 +197,37 @@ class SeriesDetailsPage extends StatelessWidget {
             title = fullTitle;
             tome = '';
           }
-          var readingStatus = series.books[index].readingStatus!;
+
+          OwnedTome? serieIsOwned;
+          try {
+            serieIsOwned = ownedTome.firstWhere((element) {
+              bool is13 = element.isbn!.trim().replaceAll("-", "").length == 13;
+              return is13
+                  ? element.isbn == series.tomes![index].isbn13
+                  : element.isbn == series.tomes![index].isbn10;
+            });
+          } catch (e) {
+            serieIsOwned = null;
+          }
+
+          int readingStatus = serieIsOwned?.readingStatus ?? 0;
+
           return InkWell(
             onTap: () {
               print(title);
             },
             child: Container(
-              padding: const EdgeInsets.only(bottom: 16),
+              padding: const EdgeInsets.only(bottom: 16, left: 4),
               decoration: BoxDecoration(
-                color: Colors.white60,
+                color: Colors.white,
                 borderRadius: BorderRadius.circular(12),
               ),
+              foregroundDecoration: serieIsOwned == null
+                  ? BoxDecoration(
+                      color: Colors.black.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    )
+                  : null,
               child:
                   Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 Expanded(
@@ -244,7 +260,10 @@ class SeriesDetailsPage extends StatelessWidget {
                                     fontWeight: FontWeight.w400, fontSize: 18),
                               ),
                               Text(
-                                readingStatus,
+                                readingStatus == 1
+                                    ? AppLocalizations.of(context)!
+                                        .currentlyReading
+                                    : "",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.w200, fontSize: 16),
                               ),

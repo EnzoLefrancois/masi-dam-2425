@@ -133,7 +133,7 @@ class LoginForm extends StatelessWidget {
                                       content: Text(
                                           'Bonjour ${FirebaseAuth.instance.currentUser!.email}')),
                                 );
-                                Navigator.pushNamed(context, '/main');
+                                Navigator.popAndPushNamed(context, '/main');
                               });
                             } on FirebaseAuthException catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
