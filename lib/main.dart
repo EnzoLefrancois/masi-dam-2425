@@ -5,8 +5,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/model/serie.dart';
+import 'package:manga_library/provider/language_provider.dart';
+import 'package:manga_library/provider/theme_provider.dart';
+import 'package:manga_library/provider/user_provider.dart';
 import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'package:manga_library/screen/options.dart';
+import 'package:manga_library/service/shared_pref_service.dart';
+import 'package:provider/provider.dart';
 import 'list.dart';
 import './routes.dart';
 
@@ -20,7 +25,14 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
-  runApp(const MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (context) => LanguageProvider()),
+      ChangeNotifierProvider(create: (_) => UserProvider()),
+      ChangeNotifierProvider(create: (_) => ThemeProvider()),
+
+    ],
+    child : const MyApp()));
 
 }
 
@@ -31,42 +43,30 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     FirebaseAuth.instance
         .setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
 
     User? user = FirebaseAuth.instance.currentUser;
-    print(user?.uid);
-
-    final limitedRoutes = <String, WidgetBuilder>{
-      '/login': customRoutes['/login']!,
-      '/register': customRoutes['/register']!,
-      '/main': customRoutes['/main']!,
-      '/resetPassword': customRoutes['/resetPassword']!,
-    };
-
-    if(user == null)
-    {
-      return MaterialApp(
-        title: 'Manga Vault',
-
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-
-        routes: limitedRoutes,
-        initialRoute: '/login',
-
-        debugShowCheckedModeBanner: false,
-      );
+    user?.reload();
+    if (user != null) {
+      loadUserFromPreferences(context);
     }
-    else{
-      return MaterialApp(
+    return MaterialApp(
         theme: ThemeData(
+          brightness: Brightness.light,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true
         ),
-
+        darkTheme: ThemeData(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.blueGrey,
+        ),
+        themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+    
+        locale: languageProvider.locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -78,13 +78,13 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
         ],
         routes: customRoutes,
-
+    
         debugShowCheckedModeBanner: false,
         title: _title,
-        initialRoute: '/',
-
+        initialRoute: user == null ? '/login' : '/',
+    
       );
-    }
+    
   }
 }
 
@@ -125,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
       MyLibrarypage(allSeries: allSeries),
       MySearchPage(
           titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      const Options()
+      Options()
     ];
   }
 
