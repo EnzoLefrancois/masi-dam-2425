@@ -58,11 +58,16 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           brightness: Brightness.light,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true
+          useMaterial3: true,
+          cardColor: Colors.white70,
+          primaryColor: Colors.white,
         ),
         darkTheme: ThemeData(
           brightness: Brightness.dark,
           primarySwatch: Colors.blueGrey,
+          useMaterial3: true,
+          cardColor: Colors.grey.shade800,
+          primaryColor: Colors.white
         ),
         themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
     

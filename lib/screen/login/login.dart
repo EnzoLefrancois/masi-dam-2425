@@ -172,7 +172,7 @@ class _LoginFormState extends State<LoginForm> {
               
                                       content: Text(
                                         errors[e.code]!,
-                                        style: const TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Theme.of(context).primaryColor),
                                       ),
                                       backgroundColor: Colors.redAccent),
                                 );

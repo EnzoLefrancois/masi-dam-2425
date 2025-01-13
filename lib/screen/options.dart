@@ -119,8 +119,8 @@ class Options extends StatelessWidget {
       },
       label: Text(
         AppLocalizations.of(context)!.optionPageLogoutText,
-        style: const TextStyle(
-            color: Colors.white, fontWeight: FontWeight.w600, fontSize: 18),
+        style: TextStyle(
+            color: Theme.of(context).primaryColor, fontWeight: FontWeight.w600, fontSize: 18),
       ),
       icon:const Icon(
         Icons.logout,
@@ -128,7 +128,7 @@ class Options extends StatelessWidget {
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.red,
-        iconColor: Colors.white,
+        iconColor: Theme.of(context).primaryColor,
         fixedSize: Size(MediaQuery.of(context).size.width, 50),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(25),
@@ -143,7 +143,7 @@ class Options extends StatelessWidget {
 
   Widget _aboutBuilder(BuildContext context) {
     return Material(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -186,7 +186,7 @@ class Options extends StatelessWidget {
     final themeProvider = Provider.of<ThemeProvider>(context);
 
     return Material(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -283,6 +283,7 @@ class Options extends StatelessWidget {
                     size: 15,
                   ),
                   style: ElevatedButton.styleFrom(
+                    backgroundColor: Theme.of(context).primaryColor,
                     iconColor: Colors.black,
                     fixedSize: Size(MediaQuery.of(context).size.width, 50),
                     shape: RoundedRectangleBorder(

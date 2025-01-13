@@ -222,7 +222,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                   SnackBar(
                                       content: Text(
                                         errors[e.code]!,
-                                        style: const TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Theme.of(context).primaryColor),
                                       ),
                                       backgroundColor: Colors.redAccent),
                                 );
