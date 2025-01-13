@@ -4,7 +4,7 @@ class Tome {
   String? isbn10;
   String? isbn13;
   String? seriesName;
-  String? synopsis;
+  String? summary;
   int? key;
 
   Tome({
@@ -13,7 +13,7 @@ class Tome {
     this.isbn10,
     this.isbn13,
     this.seriesName,
-    this.synopsis,
+    this.summary,
     this.key
   });
 
@@ -34,6 +34,6 @@ class Tome {
     isbn10 = json['isbn_10'];
     isbn13 = json['isbn_13'];
     seriesName = seriesTitle;
-    synopsis = json['synopsis'];
+    summary = json['summary'];
   }
 }

@@ -165,7 +165,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
         padding: const EdgeInsetsDirectional.fromSTEB(16, 16, 16, 16),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
-            AppLocalizations.of(context)!.detailTomeSynopsis,
+            AppLocalizations.of(context)!.detailTomeSummary,
             style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
           ),
@@ -173,7 +173,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
             height: 12,
           ),
           Text(
-            widget.tome.synopsis ?? AppLocalizations.of(context)!.detailTomeNoSummary,
+            widget.tome.summary ?? AppLocalizations.of(context)!.detailTomeNoSummary,
             style: TextStyle(color: Colors.grey.shade800),
           ),
         ]),

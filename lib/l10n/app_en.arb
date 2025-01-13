@@ -22,6 +22,6 @@
     "detailTomeOwn" : "Owned",
     "detailTomeNotOwn" : "Not owned",
     "detailTomeAllCollectionButton" : "See all collection",
-    "detailTomeSynopsis" : "Summary",
+    "detailTomeSummary" : "Summary",
     "detailTomeNoSummary" : "No summary"
 }
