@@ -5,6 +5,22 @@ import 'package:manga_library/model/tome.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/model/whishlist.dart';
 
+Future<void> createUserCollection() async {
+  String userid = FirebaseAuth.instance.currentUser!.uid;
+  try {
+    await FirebaseFirestore.instance
+        .collection('user_owned_book')
+        .doc(userid)
+        .set({});
+    await FirebaseFirestore.instance
+        .collection('user_whishlist')
+        .doc(userid)
+        .set({});
+  } catch (e) {
+    print('Erreur lors de la creation des collections : $e');
+  }
+}
+
 Future<List<Serie>> getAllSerieFromFirestore() async {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<Serie> allSeries = [];
@@ -119,7 +135,6 @@ Future<List<FriendWishlist>> getFriendWishlist() async {
   return [];
 }
 
-
 Future<bool> addTomeToOwnedList(OwnedTome newOwnedTome) async {
   try {
     String userid = FirebaseAuth.instance.currentUser!.uid;
@@ -128,8 +143,8 @@ Future<bool> addTomeToOwnedList(OwnedTome newOwnedTome) async {
         .collection('user_owned_book')
         .doc(userid)
         .set({
-          newOwnedTome.isbn! : newTomeData,
-        }, SetOptions(merge: true));
+      newOwnedTome.isbn!: newTomeData,
+    }, SetOptions(merge: true));
     return true;
   } catch (e) {
     print('Erreur lors de l\'ajout du tome : $e');
