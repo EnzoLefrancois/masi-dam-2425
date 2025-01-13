@@ -20,9 +20,7 @@ class _RegisterFormState extends State<RegisterForm> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
+      onTap: () {FocusScope.of(context).unfocus();},
       child: Scaffold(
         body: SafeArea(
           child: Form(
@@ -36,25 +34,21 @@ class _RegisterFormState extends State<RegisterForm> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 8.0),
-                      child: Text('Manga Vault',
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                  const Center(
-                    child: Padding(
-                      padding: EdgeInsets.only(bottom: 50.0),
-                      child: Text(
-                          "L'application pour suivre l'évolution de votre mangathèque",
-                          style: TextStyle(
-                              fontSize: 13, fontStyle: FontStyle.italic)),
-                    ),
-                  ),
+              const Center(
+              child: Padding(
+              padding: EdgeInsets.only(bottom:8.0),
+              child: Text('Manga Vault',style: TextStyle(fontSize: 25,fontWeight: FontWeight.bold)),
+                ),
+              ),
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.only(bottom:50.0),
+                  child: Text("L'application pour suivre l'évolution de votre mangathèque",style: TextStyle(fontSize: 13, fontStyle: FontStyle.italic)),
+                ),
+              ),
                   Container(
-                    margin: const EdgeInsets.only(top: 4 * 3, bottom: 8 / 2),
+                    margin: const EdgeInsets.only(
+                        top: 4 * 3, bottom: 8 / 2),
                     padding: const EdgeInsets.symmetric(
                       vertical: 5 / 2,
                       horizontal: 4,
@@ -82,6 +76,7 @@ class _RegisterFormState extends State<RegisterForm> {
                           },
                         ),
                         const Divider(
+
                           height: 8,
                         ),
                         TextFormField(
@@ -110,14 +105,12 @@ class _RegisterFormState extends State<RegisterForm> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
-                          child: const Text('Se connecter',
-                              style: TextStyle(color: Colors.blue)),
+                          child: const Text('Se connecter',style: TextStyle(color: Colors.blue)),
                           onTap: () {
                             Navigator.pushNamed(context, '/login');
                           }),
                       InkWell(
-                        child: const Text('Mot de passe oublié',
-                            style: TextStyle(color: Colors.blue)),
+                        child: const Text('Mot de passe oublié',style: TextStyle(color: Colors.blue)),
                         onTap: () {
                           Navigator.pushNamed(context, '/resetPassword');
                         },
@@ -128,7 +121,8 @@ class _RegisterFormState extends State<RegisterForm> {
                     height: 4,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
+                    padding: const EdgeInsets.only(top:16.0),
+
                     child: ElevatedButton(
                         child: const Text('Créer un compte'),
                         onPressed: () async {
@@ -152,8 +146,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                 SnackBar(
                                     content: Text(
                                       errors[e.code]!,
-                                      style:
-                                          const TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                     ),
                                     backgroundColor: Colors.redAccent),
                               );

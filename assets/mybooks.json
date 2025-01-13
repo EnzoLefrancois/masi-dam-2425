@@ -1,40 +1,19 @@
 {
   "books": [
     {
-      "id": "melancoline",
-      "title": "One Piece Episode A - Tome 02: Ace",
-      "main_title": "One Piece Episode A",
-      "cover": "https://images.isbndb.com/covers/71/93/9782344057193.jpg",
-      "is_read": 1,
-      "ISBN": 9782344057193,
-      "synopsis": "Dans ce tome palpitant, l'équipage du Chapeau de Paille arrive sur une mystérieuse île qui semble être un véritable paradis. Mais comme toujours dans le monde de One Piece, les apparences sont trompeuses. Luffy et ses compagnons vont devoir faire face à de nouveaux défis et découvrir les sombres secrets qui se cachent derrière cette façade idyllique. Entre combats épiques, révélations surprenantes et moments d'émotion, ce tome promet une aventure inoubliable."
+      "series_id": 145896,
+      "reading_status": 1,
+      "isbn_10": "2723488527"
     },
     {
-      "id": "melancoline1",
-      "title": "One Piece Episode A - Tome 01: Ace",
-      "main_title": "One Piece Episode A",
-      "cover": "https://images.isbndb.com/covers/71/86/9782344057186.jpg",
-      "is_read": 0,
-      "ISBN": 9782344057186,
-      "synopsis": "Dans ce tome palpitant, l'équipage du Chapeau de Paille arrive sur une mystérieuse île qui semble être un véritable paradis. Mais comme toujours dans le monde de One Piece, les apparences sont trompeuses. Luffy et ses compagnons vont devoir faire face à de nouveaux défis et découvrir les sombres secrets qui se cachent derrière cette façade idyllique. Entre combats épiques, révélations surprenantes et moments d'émotion, ce tome promet une aventure inoubliable."
+      "series_id": 784259,
+      "reading_status": 0,
+      "isbn_10": "2351423550"
     },
     {
-      "id": "melancoline2",
-      "title": "Dragon Ball - Tome 30: Réunification",
-      "main_title": "Dragon Ball",
-      "cover": "https://images.isbndb.com/covers/34/89/9782723423489.jpg",
-      "is_read": 1,
-      "ISBN": 9782723423489,
-      "synopsis": "Dans ce tome palpitant, l'équipage du Chapeau de Paille arrive sur une mystérieuse île qui semble être un véritable paradis. Mais comme toujours dans le monde de One Piece, les apparences sont trompeuses. Luffy et ses compagnons vont devoir faire face à de nouveaux défis et découvrir les sombres secrets qui se cachent derrière cette façade idyllique. Entre combats épiques, révélations surprenantes et moments d'émotion, ce tome promet une aventure inoubliable."
-    },
-    {
-      "id": "melancoline3",
-      "title": "Dragon Ball Gaiden Tensei Shitara Yamcha Datta Ken",
-      "main_title": "Dragon Ball Gaiden Tensei Shitara Yamcha Datta Ken",
-      "cover": "https://images.isbndb.com/covers/26/18/9784088812618.jpg",
-      "is_read": 0,
-      "ISBN": 9784088812618,
-      "synopsis": "Dans ce tome palpitant, l'équipage du Chapeau de Paille arrive sur une mystérieuse île qui semble être un véritable paradis. Mais comme toujours dans le monde de One Piece, les apparences sont trompeuses. Luffy et ses compagnons vont devoir faire face à de nouveaux défis et découvrir les sombres secrets qui se cachent derrière cette façade idyllique. Entre combats épiques, révélations surprenantes et moments d'émotion, ce tome promet une aventure inoubliable."
+      "series_id": 784259,
+      "reading_status": 0,
+      "isbn_10": "2351423569"
     }
   ]
 }

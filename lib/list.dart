@@ -39,7 +39,7 @@ class _MySearchPageState extends State<MySearchPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.searchManga),
+        title: const Text("search"),
         actions: [
           IconButton(
             icon: const Icon(Icons.search),
@@ -59,7 +59,7 @@ class _MySearchPageState extends State<MySearchPage> {
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: AppLocalizations.of(context)!.searchManga,
+                labelText: "chercher",
                 border: const OutlineInputBorder(),
               ),
               onChanged: _filterTitles, // Filtrer les titres lors de la saisie

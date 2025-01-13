@@ -13,13 +13,15 @@ import './routes.dart';
 import 'service/firestore_service.dart';
 import 'screen/options.dart';
 
+
+
 Future<void> main() async {
   // Charger le fichier .env
   await dotenv.load(fileName: ".env");
-  WidgetsFlutterBinding
-      .ensureInitialized(); // Nécessaire pour les appels async dans `main`
+  WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
   runApp(const MyApp());
+
 }
 
 class MyApp extends StatelessWidget {
@@ -42,22 +44,29 @@ class MyApp extends StatelessWidget {
       '/resetPassword': customRoutes['/resetPassword']!,
     };
 
-    if (user == null) {
+    if(user == null)
+    {
       return MaterialApp(
         title: 'Manga Vault',
+
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
+
         routes: limitedRoutes,
         initialRoute: '/login',
+
         debugShowCheckedModeBanner: false,
       );
-    } else {
+    }
+    else{
       return MaterialApp(
         theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true
+        ),
+
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -69,9 +78,11 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
         ],
         routes: customRoutes,
+
         debugShowCheckedModeBanner: false,
         title: _title,
         initialRoute: '/',
+
       );
     }
   }
@@ -133,6 +144,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,8 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: const Icon(Icons.favorite),
-            label: AppLocalizations.of(context)!
-                .wishlist, // Accès direct aux localisations
+            label: AppLocalizations.of(context)!.wishlist, // Accès direct aux localisations
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
