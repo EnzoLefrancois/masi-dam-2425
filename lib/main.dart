@@ -29,9 +29,11 @@ class MyApp extends StatelessWidget {
 
   static const String _title = 'Manga Vault';
 
-
   @override
   Widget build(BuildContext context) {
+    FirebaseAuth.instance
+        .setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
+
     User? user = FirebaseAuth.instance.currentUser;
     print(user?.uid);
 

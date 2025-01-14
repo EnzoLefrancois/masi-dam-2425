@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/model/error_firebase_auth.dart';
 import 'package:manga_library/routes.dart';
 import 'package:email_validator/email_validator.dart';
-
+import 'package:manga_library/service/firestore_service.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
@@ -131,14 +131,15 @@ class _RegisterFormState extends State<RegisterForm> {
                             try {
                               await FirebaseAuth.instance
                                   .createUserWithEmailAndPassword(
-                                  email: _email, password: _password)
-                                  .then((value) {
+                                      email: _email, password: _password)
+                                  .then((value) async {
+                                await createUserCollection();
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(
                                           'Bonjour ${FirebaseAuth.instance.currentUser!.email}')),
                                 );
-                                Navigator.pushNamed(context, '/main');
+                                Navigator.popAndPushNamed(context, '/main');
                               });
                             } on FirebaseAuthException catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(

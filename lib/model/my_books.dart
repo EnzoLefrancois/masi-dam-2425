@@ -12,8 +12,16 @@ class OwnedTome {
     readingStatus = json['reading_status'];
     serieId = json['series_id'];
   }
-}
 
+  Map<String, dynamic> toJson() {
+    return {
+      'isbn': isbn,
+      'series_id': serieId,
+      'reading_status': readingStatus,
+    };
+  }
+
+}
 class MyBooks {
   List<OwnedTome>? books = [];
 

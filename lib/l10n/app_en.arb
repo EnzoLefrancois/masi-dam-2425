@@ -15,5 +15,13 @@
     "tome": "Tome",
     "unknowTitle": "Unknown Title",
 
-    "libraryEmpty": "No book in library"
+    "libraryEmpty": "No book in library",
+
+    "detailTomeWish" : "Wish",
+    "detailTomeNotWish" : "Wished",
+    "detailTomeOwn" : "Owned",
+    "detailTomeNotOwn" : "Not owned",
+    "detailTomeAllCollectionButton" : "See all collection",
+    "detailTomeSummary" : "Summary",
+    "detailTomeNoSummary" : "No summary"
 }
