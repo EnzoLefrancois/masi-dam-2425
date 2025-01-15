@@ -127,8 +127,8 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                 horizontal: 10, vertical: 5),
             child: Text(
               genre,
-              style: const TextStyle(
-                  color: Colors.white, fontWeight: FontWeight.w500),
+              style: TextStyle(
+                  color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -173,8 +173,8 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
             children: [
               Text(
                 widget.series.author!,
-                style: const TextStyle(
-                    color: Colors.white, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor, fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -265,7 +265,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                   .of(context)
                   .colorScheme
                   .primary
-                  : Colors.black,
+                  : Theme.of(context).primaryColor,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -314,80 +314,83 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
 
           int readingStatus = serieIsOwned?.readingStatus ?? 0;
 
-          return InkWell(
-            onTap: () {
-              print(title);
-              Navigator.pushNamed(
-                context,
-                '/tome-details',
-                arguments: {
-                  'tome': _filterListTome[index],
-                  'serie': widget.series,
-                  'ownedTomes': widget.ownedTome
-                },
-              );
-            },
-            child: Container(
-              padding: const EdgeInsets.only(bottom: 16, left: 4),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: InkWell(
+              onTap: () {
+                print(title);
+                Navigator.pushNamed(
+                  context,
+                  '/tome-details',
+                  arguments: {
+                    'tome': _filterListTome[index],
+                    'serie': widget.series,
+                    'ownedTomes': widget.ownedTome
+                  },
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.only(bottom: 16, left: 4),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                foregroundDecoration: serieIsOwned == null
+                    ? BoxDecoration(
+                        color: Theme.of(context).cardColor.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(12),
+                      )
+                    : null,
+                child:
+                    Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                  Expanded(
+                    child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8)),
+                            child: Image(
+                              image: i,
+                              width: 80,
+                              height: 120,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  title,
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w600, fontSize: 22),
+                                ),
+                                // Text(
+                                //   tome,
+                                //   style: const TextStyle(
+                                //       fontWeight: FontWeight.w400, fontSize: 18),
+                                // ),
+                                Text(
+                                  readingStatus == 1
+                                      ? AppLocalizations.of(context)!
+                                          .currentlyReading
+                                      : "",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w200, fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
+                  ),
+                  const Icon(
+                    Icons.chevron_right,
+                    size: 24,
+                  ),
+                ]),
               ),
-              foregroundDecoration: serieIsOwned == null
-                  ? BoxDecoration(
-                      color: Colors.black.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    )
-                  : null,
-              child:
-                  Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-                Expanded(
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Image(
-                            image: i,
-                            width: 80,
-                            height: 120,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                title,
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w600, fontSize: 22),
-                              ),
-                              // Text(
-                              //   tome,
-                              //   style: const TextStyle(
-                              //       fontWeight: FontWeight.w400, fontSize: 18),
-                              // ),
-                              Text(
-                                readingStatus == 1
-                                    ? AppLocalizations.of(context)!
-                                        .currentlyReading
-                                    : "",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.w200, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ]),
-                ),
-                const Icon(
-                  Icons.chevron_right,
-                  size: 24,
-                ),
-              ]),
             ),
           );
         });

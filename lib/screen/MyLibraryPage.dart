@@ -165,10 +165,10 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               shape: const CircleBorder(),
             ),
             padding: const EdgeInsets.all(10),
-            child: const Icon(
+            child: Icon(
               Icons.filter_list,
               size: 25,
-              color: Colors.white,
+              color: Theme.of(context).primaryColor
             ),
           ),
         ),
@@ -214,10 +214,10 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
               shape: const CircleBorder(),
             ),
             padding: const EdgeInsets.all(10),
-            child: const Icon(
+            child: Icon(
               Icons.sort_by_alpha_outlined,
               size: 25,
-              color: Colors.white,
+              color: Theme.of(context).primaryColor,
             ),
           ),
         ),
@@ -237,7 +237,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
             style: TextStyle(
               color: isSelected
                   ? Theme.of(context).colorScheme.primary
-                  : Colors.black,
+                  : Theme.of(context).primaryColor,
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -271,7 +271,7 @@ class _MyLibraryPageState extends State<MyLibrarypage> {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
                     shape: BoxShape.rectangle,
-                    color: Colors.white70),
+                    color: Theme.of(context).cardColor),//todo
                 child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [

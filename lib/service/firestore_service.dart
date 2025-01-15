@@ -3,7 +3,48 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/tome.dart';
 import 'package:manga_library/model/serie.dart';
+import 'package:manga_library/model/user_model.dart';
 import 'package:manga_library/model/whishlist.dart';
+
+Future<UserModel?> getUserDetailsFromFirebase() async {
+  String userid = FirebaseAuth.instance.currentUser!.uid;
+
+  try {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userid)
+        .get();
+
+    if (userDoc.exists) {
+      UserModel m = UserModel.fromJson(userDoc.data()!);
+      return m;
+    } else {
+      print('Aucun document trouvé pour cet utilisateur.');
+    }
+  } catch (e) {
+    print('Erreur lors de la récupération des livres : $e');
+  }
+  return null;
+
+}
+
+Future<void> saveUserToFirestore(String firstName, String lastName, String photoUrl) async {
+  final FirebaseAuth auth = FirebaseAuth.instance;
+  final User? user = auth.currentUser;
+
+  if (user != null) {
+    await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+      'uid': user.uid,
+      'email': user.email,
+      'firstName': firstName,
+      'lastName': lastName,
+      // 'photoUrl': photoUrl,
+      'photoUrl' : "https://images.unsplash.com/photo-1524952249965-023a2a31663d?w=500&h=500",
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
+}
+
 
 Future<void> createUserCollection() async {
   String userid = FirebaseAuth.instance.currentUser!.uid;

@@ -127,7 +127,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
     return Container(
         width: MediaQuery.sizeOf(context).width,
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Padding(
@@ -147,6 +147,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                 'ISBN : ${widget.tome.isbn13!}',
                 style: const TextStyle(
                   fontWeight: FontWeight.w500,
+                  color: Colors.black
                 ),
               ),
             ],
@@ -158,7 +159,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
     return Container(
       width: MediaQuery.sizeOf(context).width,
       decoration: BoxDecoration(
-        color: Colors.grey.shade200,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Padding(
@@ -166,7 +167,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             AppLocalizations.of(context)!.detailTomeSummary,
-            style: const TextStyle(
+            style: TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
           ),
           const SizedBox(
@@ -174,7 +175,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
           ),
           Text(
             widget.tome.summary ?? AppLocalizations.of(context)!.detailTomeNoSummary,
-            style: TextStyle(color: Colors.grey.shade800),
+            style: TextStyle(color: Colors.black),
           ),
         ]),
       ),
@@ -236,14 +237,14 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
               ),
               label: Text(
                 _isWish ? AppLocalizations.of(context)!.detailTomeWish : AppLocalizations.of(context)!.detailTomeNotWish,
-                style: const TextStyle(
+                style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: Colors.white),
+                    color: Theme.of(context).primaryColor),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green.shade200,
-                iconColor: Colors.white,
+                iconColor: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
@@ -312,14 +313,14 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
             ),
             label: Text(
               _isOwned ? AppLocalizations.of(context)!.detailTomeOwn : AppLocalizations.of(context)!.detailTomeNotOwn,
-              style: const TextStyle(
+              style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18,
-                  color: Colors.white),
+                  color: Theme.of(context).primaryColor),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blue.shade200,
-              iconColor: Colors.white,
+              iconColor: Theme.of(context).primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(25),
               ),
@@ -375,7 +376,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
               // ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.orange.shade200,
-                iconColor: Colors.white,
+                iconColor: Theme.of(context).primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(25),
                 ),
