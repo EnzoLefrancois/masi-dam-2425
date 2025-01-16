@@ -23,11 +23,11 @@ class OnboardingScreen extends StatelessWidget {
             scrollPhysics: const BouncingScrollPhysics(),
             pages: [
               OnboardingPageCreator.onboardingCreate(context,'Manga Vault',"L'application pour suivre l'évolution de votre mangathèque", 'assets/images/splash.png',2.5),
-              OnboardingPageCreator.onboardingCreate(context,'Ajouter un/des mangas',"Cliquer sur le bouton flottant et scanner le code barre de vos mangas", 'assets/images/wishlist.png',2),
-              OnboardingPageCreator.onboardingCreate(context,'Ajouter les wishlist de vos collègues',"Scanner le QR code de votre amis, et celle-ci serai ajoutée", 'assets/images/wishlist.png',2),
-              OnboardingPageCreator.onboardingCreate(context,'Visualiser vos mangas',"Visualiser les mangas que vous possèdez - Faites une recherche sur les mangas que vous possèder", 'assets/images/wishlist.png',2),
-              OnboardingPageCreator.onboardingCreate(context,'Chercher un manga particulier', 'Faites une recherche sur le manga que vous chercher, ajouter le a votre wishlist ou bien ajouter le a votre collection', 'assets/images/wishlist.png',2),
-              OnboardingPageCreator.onboardingCreate(context, 'Lectre en cours', 'Vous êtes en phase de lecture d\'un manga ? Indiquez le grâce au bouton PLAY\n Profitez de l\'application', 'assets/images/wishlist.png',2),
+              OnboardingPageCreator.onboardingCreate(context,'Ajouter un/des mangas',"Cliquer sur le bouton flottant et scanner le code barre de vos mangas", 'assets/images/1.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,'Ajouter les wishlist de vos collègues',"Scanner le QR code de votre amis, et celle-ci serai ajoutée", 'assets/images/2.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,'Visualiser vos mangas',"Visualiser les mangas que vous possèdez - Faites une recherche sur les mangas que vous possèder", 'assets/images/3.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,'Chercher un manga particulier', 'Faites une recherche sur le manga que vous chercher, ajouter le a votre wishlist ou bien ajouter le a votre collection', 'assets/images/1.gif',2),
+              OnboardingPageCreator.onboardingCreate(context, 'Lectre en cours', 'Vous êtes en phase de lecture d\'un manga ? Indiquez le grâce au bouton PLAY\n Profitez de l\'application', 'assets/images/1.gif',2),
 
             ],
             onDone: () async {
