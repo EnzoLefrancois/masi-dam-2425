@@ -51,7 +51,7 @@ class _MySearchPageState extends State<MySearchPage> {
             child: TextField(
               controller: searchController,
               decoration: InputDecoration(
-                labelText: "Chercher",
+                labelText: "chercher",
                 border: const OutlineInputBorder(),
               ),
               onChanged: _filterTitles, // Filtrer les titres lors de la saisie
