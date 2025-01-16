@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +28,10 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
+
+  final connectivityResult = await Connectivity().checkConnectivity();
+  bool isConnected = (connectivityResult != ConnectivityResult.none);
+  
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageProvider()),
@@ -32,12 +39,13 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
 
     ],
-    child : const MyApp()));
+    child : MyApp(hasInternet:  isConnected,)));
 
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasInternet;
+  const MyApp({super.key, required this.hasInternet});
 
   static const String _title = 'Manga Vault';
 
@@ -49,7 +57,8 @@ class MyApp extends StatelessWidget {
     FirebaseAuth.instance
         .setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
 
-    User? user = FirebaseAuth.instance.currentUser;
+    User? user;
+    user = FirebaseAuth.instance.currentUser;
     user?.reload();
     if (user != null) {
       loadUserFromPreferences(context);
@@ -70,7 +79,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.white
         ),
         themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-    
+
         locale: languageProvider.locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -83,13 +92,13 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
         ],
         routes: customRoutes,
-    
+
         debugShowCheckedModeBanner: false,
         title: _title,
-        initialRoute: user == null ? '/login' : '/',
-    
+        initialRoute: !hasInternet ? '/no-internet' :  user == null ? '/login' : '/',
+
       );
-    
+
   }
 }
 

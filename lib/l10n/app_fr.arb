@@ -68,9 +68,4 @@
     "changePasswordError1": "Une erreur est survenue.",
     "changePasswordError2": "L'ancien mot de passe est incorrect.",
     "changePasswordError3": "Le nouveau mot de passe est trop faible."
-
-
-    
-
-
 }
