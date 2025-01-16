@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -35,6 +38,9 @@ Future<void> main() async {
 
   }
 
+  final connectivityResult = await Connectivity().checkConnectivity();
+  bool isConnected = (connectivityResult != ConnectivityResult.none);
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageProvider()),
@@ -42,14 +48,17 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
 
     ],
-    child : MyApp(isFirstTime: isFirstTime, user: user,)));
+    child : MyApp(isFirstTime: isFirstTime, user: user, hasInternet:  isConnected,)));
+
 
 }
 
 class MyApp extends StatelessWidget {
   final bool isFirstTime;
   final User? user;
-  const MyApp({super.key, required this.isFirstTime, required this.user});
+  final bool hasInternet;
+  const MyApp({super.key,  required this.isFirstTime, required this.user, required this.hasInternet});
+
 
   static const String _title = 'Manga Vault';
 
@@ -93,7 +102,8 @@ class MyApp extends StatelessWidget {
 
         debugShowCheckedModeBanner: false,
         title: _title,
-        initialRoute: isFirstTime ? '/onboarding' :   user == null ? '/login' : '/',
+        initialRoute: isFirstTime ? '/onboarding' :  !hasInternet ? '/no-internet' :  user == null ? '/login' : '/',
+
       );
 
   }

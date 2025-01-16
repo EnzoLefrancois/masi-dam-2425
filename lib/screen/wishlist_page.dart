@@ -39,6 +39,7 @@ class _WishlistPageState extends State<WishlistPage> {
     _friendWishlist = await getFriendWishlist();
 
     return true;
+
   }
 
   final _singleChildController = ScrollController();
@@ -111,7 +112,7 @@ class _WishlistPageState extends State<WishlistPage> {
                         onPressed: () async {
                           User? user = FirebaseAuth.instance.currentUser;
                           if (user != null) {
-                            var userinfo = Provider.of<UserProvider>(context).user;
+                            var userinfo = Provider.of<UserProvider>(context, listen: false).user;
 
                             String uid = user.uid;
                             String? name =  userinfo?.firstName!;

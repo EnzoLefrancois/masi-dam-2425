@@ -285,19 +285,9 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
         shrinkWrap: true,
         itemCount: _filterListTome.length,
         itemBuilder: (context, index) {
-          var i = NetworkImage(_filterListTome[index].cover!,
-              headers: {'Access-Control-Allow-Origin': '*'});
           var fullTitle = _filterListTome[index].tomeName ??
               AppLocalizations.of(context)!.unknowTitle;
-          String title, tome;
-          // if (fullTitle.contains(' - ')) {
-          //   var parts = fullTitle.split(' - ');
-          //   title = parts[0];
-          //   tome = parts.length > 1 ? parts[1] : '';
-          // } else {
-          //   title = fullTitle;
-          //   tome = '';
-          // }
+          String title;
           title = fullTitle;
 
           OwnedTome? serieIsOwned;
@@ -350,11 +340,17 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                           Container(
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8)),
-                            child: Image(
-                              image: i,
+                            child: Image.network(
+                              _filterListTome[index].cover!,
                               width: 80,
                               height: 120,
                               fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.asset('assets/images/no-internet-connection-icon.jpg',
+                                    width: 80,
+                                    height: 120,
+                                    fit: BoxFit.cover);
+                              },
                             ),
                           ),
                           const SizedBox(width: 16),
