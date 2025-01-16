@@ -5,6 +5,7 @@ import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/model/tome.dart';
 import 'package:manga_library/screen/login/login.dart';
+import 'package:manga_library/screen/onboarding/onboarding_page.dart';
 import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/screen/login/register_form.dart';
 import 'package:manga_library/screen/login/reset_password_form.dart';
@@ -15,6 +16,7 @@ import 'package:manga_library/screen/tome_detail_page.dart';
 import 'screen/isbn_scanner.dart';
 
 var customRoutes = <String, WidgetBuilder>{
+  '/onboarding' : (context) => OnboardingScreen(),
   '/': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const MyHomePage(title: "Manga Vault") ,
 
   '/isbn-scanner': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const IsbnScannerScreen(),
