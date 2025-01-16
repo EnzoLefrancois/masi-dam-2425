@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
-import 'manga_search_delegate.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
+import 'package:manga_library/model/my_books.dart';
+import 'package:manga_library/model/serie.dart';
+import 'package:manga_library/service/firestore_service.dart';
 
 class MySearchPage extends StatefulWidget {
-  final List<String> titles;
+  final List<Serie> allSeries;
 
-  const MySearchPage({super.key, required this.titles});
+  const MySearchPage({super.key, required this.allSeries});
 
   @override
   State<MySearchPage> createState() => _MySearchPageState();
 }
 
 class _MySearchPageState extends State<MySearchPage> {
+  List<String> allTitles = [];
   List<String> filteredTitles = []; // Liste pour les titres filtrés
   TextEditingController searchController = TextEditingController(); // Contrôleur pour la recherche
 
   @override
   void initState() {
+    allTitles = widget.allSeries.map((row) => row.name!).toList();
+
     super.initState();
-    filteredTitles = widget.titles; // Initialiser avec la liste complète
+    filteredTitles = allTitles; // Initialiser avec la liste complète
   }
 
   // Filtrer les titres en fonction de la recherche
   void _filterTitles(String query) {
     setState(() {
       if (query.isEmpty) {
-        filteredTitles = widget.titles; // Afficher tous les titres si la recherche est vide
+        filteredTitles = allTitles; // Afficher tous les titres si la recherche est vide
       } else {
-        filteredTitles = widget.titles
+        filteredTitles = allTitles
             .where((title) => title.toLowerCase().contains(query.toLowerCase())) // Filtrer en fonction de la recherche
             .toList();
       }
@@ -38,20 +41,6 @@ class _MySearchPageState extends State<MySearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("search"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: MangaSearchDelegate(titles: widget.titles),
-              );
-            },
-          ),
-        ],
-      ),
       body: Column(
         children: [
           Padding(
@@ -72,9 +61,14 @@ class _MySearchPageState extends State<MySearchPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(filteredTitles[index]),
-                  onTap: () {
+                  onTap: () async {
                     // Action lors du clic sur un titre (par exemple, afficher plus de détails)
-
+                    Serie s = widget.allSeries.firstWhere((serie) => serie.name! == filteredTitles[index]);
+                    MyBooks myBooks = await getUsersAllOwnedBooks();
+                    Navigator.pushNamed(context, '/series-details', arguments: {
+                      "serie" : s,
+                      "ownedTomes" : myBooks.books!
+                    });
                   },
                 );
               },

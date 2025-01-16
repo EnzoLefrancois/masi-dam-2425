@@ -15,11 +15,12 @@ import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:manga_library/screen/wishlist_page.dart';
 import 'list.dart';
 import './routes.dart';
 
 import 'service/firestore_service.dart';
-import 'screen/options.dart';
 
 
 
@@ -28,6 +29,14 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+  User? user;
+  if (!isFirstTime) {
+    user = FirebaseAuth.instance.currentUser;
+    user?.reload();
+
+  }
 
   final connectivityResult = await Connectivity().checkConnectivity();
   bool isConnected = (connectivityResult != ConnectivityResult.none);
@@ -39,13 +48,15 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
 
     ],
-    child : MyApp(hasInternet:  isConnected,)));
+    child : MyApp(isFirstTime: isFirstTime, user: user, hasInternet:  isConnected,)));
 
 }
 
 class MyApp extends StatelessWidget {
+  final bool isFirstTime;
+  final User? user;
   final bool hasInternet;
-  const MyApp({super.key, required this.hasInternet});
+  const MyApp({super.key,  required this.isFirstTime, required this.user, required this.hasInternet});
 
   static const String _title = 'Manga Vault';
 
@@ -53,16 +64,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-
-    FirebaseAuth.instance
-        .setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
-
-    User? user;
-    user = FirebaseAuth.instance.currentUser;
-    user?.reload();
     if (user != null) {
       loadUserFromPreferences(context);
     }
+
+    FirebaseAuth.instance
+        .setLanguageCode('fr');
+
     return MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
@@ -87,15 +95,12 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [
-          Locale('en'), // English
-          Locale('fr'), // French
-        ],
+        supportedLocales: languageProvider.localList,
         routes: customRoutes,
 
         debugShowCheckedModeBanner: false,
         title: _title,
-        initialRoute: !hasInternet ? '/no-internet' :  user == null ? '/login' : '/',
+        initialRoute: isFirstTime ? '/onboarding' :  !hasInternet ? '/no-internet' :  user == null ? '/login' : '/',
 
       );
 
@@ -118,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Liste des pages de l'application
   late Future<List<Widget>> _pages;
+  late List<Serie>  allSeries;
 
   @override
   void initState() {
@@ -127,19 +133,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Charger et parser le fichier CSV
   Future<List<Widget>> _loadData() async {
-    List<Serie> allSeries = await getAllSerieFromFirestore();
-    List<String> mangaTitles = allSeries.map((row) => row.name!).toList();
-    String userid = FirebaseAuth.instance.currentUser!.uid;
-    getUserWishlist(userid);
-    getFriendWishlist();
+    allSeries = await getAllSerieFromFirestore();
 
     return [
-      const Center(
-          child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
+      WishlistPage(allSeries: allSeries),
       MyLibrarypage(allSeries: allSeries),
       MySearchPage(
-          titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      Options()
+          allSeries: allSeries), // Passer la liste des titres à MySearchPage
+      const Options()
     ];
   }
 
@@ -216,7 +217,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/isbn-scanner');
+          Navigator.pushNamed(context, '/isbn-scanner', arguments: allSeries);
         },
         tooltip: 'Scanner',
         child: const Icon(Icons.document_scanner_rounded),

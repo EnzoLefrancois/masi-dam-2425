@@ -1,11 +1,11 @@
 class Wishlist {
-  String? isbn10;
+  String? isbn;
   int? serieId;
 
-  Wishlist({this.isbn10, this.serieId});
+  Wishlist({this.isbn, this.serieId});
 
   Wishlist.fromJson(Map<String, dynamic> json) {
-    isbn10 = json['isbn_10'];
+    isbn = json['isbn'];
     serieId = json['serie_id'];
   }
 }
