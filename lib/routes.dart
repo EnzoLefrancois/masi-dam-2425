@@ -19,8 +19,8 @@ var customRoutes = <String, WidgetBuilder>{
 
   '/isbn-scanner': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const IsbnScannerScreen(),
 
-  '/series-details': (context) { 
-    if (FirebaseAuth.instance.currentUser == null) 
+  '/series-details': (context) {
+    if (FirebaseAuth.instance.currentUser == null)
     {
       return LoginForm();
     }
@@ -34,7 +34,7 @@ var customRoutes = <String, WidgetBuilder>{
     );
   },
   '/tome-details': (context) {
-    if (FirebaseAuth.instance.currentUser == null) 
+    if (FirebaseAuth.instance.currentUser == null)
     {
       return LoginForm();
     }
@@ -52,5 +52,5 @@ var customRoutes = <String, WidgetBuilder>{
   '/register': (context) => FirebaseAuth.instance.currentUser == null ? RegisterForm() : const MyHomePage(title: "Manga Vault"),
   '/resetPassword': (context) => FirebaseAuth.instance.currentUser == null ? ResetPasswordForm() : const MyHomePage(title: "Manga Vault"),
   '/change-password': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const ChangePasswordPage(),
-  
+
 };

@@ -70,7 +70,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.white
         ),
         themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-    
+
         locale: languageProvider.locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -83,13 +83,13 @@ class MyApp extends StatelessWidget {
           Locale('fr'), // French
         ],
         routes: customRoutes,
-    
+
         debugShowCheckedModeBanner: false,
         title: _title,
         initialRoute: user == null ? '/login' : '/',
-    
+
       );
-    
+
   }
 }
 
@@ -119,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // Charger et parser le fichier CSV
   Future<List<Widget>> _loadData() async {
     List<Serie> allSeries = await getAllSerieFromFirestore();
-    List<String> mangaTitles = allSeries.map((row) => row.name!).toList();
     String userid = FirebaseAuth.instance.currentUser!.uid;
     getUserWishlist(userid);
     getFriendWishlist();
@@ -129,8 +128,8 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
       MyLibrarypage(allSeries: allSeries),
       MySearchPage(
-          titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      Options()
+          allSeries: allSeries), // Passer la liste des titres à MySearchPage
+      const Options()
     ];
   }
 
