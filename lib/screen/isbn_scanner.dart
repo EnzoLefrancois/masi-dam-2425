@@ -1,17 +1,15 @@
 import 'dart:collection';
 
 import 'package:flutter/material.dart';
-import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/model/tome.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widget/scanner_widget.dart';
 
 class IsbnScannerScreen extends StatefulWidget {
-  List<Serie> allSeries;
-  IsbnScannerScreen({super.key, required this.allSeries});
+  final List<Serie> allSeries;
+  const IsbnScannerScreen({super.key, required this.allSeries});
 
   @override
   State<IsbnScannerScreen> createState() => _IsbnScannerScreenState();

@@ -8,7 +8,10 @@ import 'package:manga_library/model/tome.dart';
 import 'package:manga_library/model/whishlist.dart';
 import 'package:manga_library/service/firestore_service.dart';
 import 'package:manga_library/widget/scanner_widget.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+
+import '../provider/user_provider.dart';
 
 class WishlistPage extends StatefulWidget {
   final List<Serie> allSeries;
@@ -35,13 +38,6 @@ class _WishlistPageState extends State<WishlistPage> {
     String userid = FirebaseAuth.instance.currentUser!.uid;
     _userWishlist = await getUserWishlist(userid);
     _friendWishlist = await getFriendWishlist();
-    //
-    // _userWishlist.addAll(await getUserWishlist(userid));
-    // _friendWishlist.addAll(await getFriendWishlist());
-    // _friendWishlist.addAll(await getFriendWishlist());
-    // _friendWishlist.addAll(await getFriendWishlist());
-    // _friendWishlist.addAll(await getFriendWishlist());
-    // _friendWishlist.addAll(await getFriendWishlist());
 
 
     return true;
@@ -91,8 +87,8 @@ class _WishlistPageState extends State<WishlistPage> {
                                                   content: Text(
                                                       'Wishlist de ${friendName} ajouté avec succès')),
                                               ) ;
+                                              _friendWishlist = await getFriendWishlist();
                                               setState(() {
-                                                //todo recharchar la page
                                               });
                                             } else {
                                               ScaffoldMessenger.of(context).showSnackBar(
@@ -117,11 +113,13 @@ class _WishlistPageState extends State<WishlistPage> {
                         onPressed: () async {
                           User? user = FirebaseAuth.instance.currentUser;
                           if (user != null) {
+                            var userinfo = Provider.of<UserProvider>(context).user;
+
                             String uid = user.uid;
-                            String name =  "User"; //todo
+                            String? name =  userinfo?.firstName!;
                             Map<String, String> jsonData = {
                               "friend_userid": uid,
-                              "friend_name": name,
+                              "friend_name": name!,
                             };
                             String qrData = json.encode(jsonData);
                             await showDialog(
@@ -214,7 +212,6 @@ class _WishlistPageState extends State<WishlistPage> {
   Widget _coverBuilder(Tome tome,Serie serie,  BuildContext context) {
     return GestureDetector(
       onTap: () async {
-        //todo
           MyBooks allOwnedTome = await getUsersAllOwnedBooks();
           List<OwnedTome> ownedTome = allOwnedTome.books!;
           Navigator.pushNamed(context, "/tome-details", arguments: {

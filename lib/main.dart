@@ -18,7 +18,6 @@ import 'list.dart';
 import './routes.dart';
 
 import 'service/firestore_service.dart';
-import 'screen/options.dart';
 
 
 
