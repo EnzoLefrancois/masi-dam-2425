@@ -40,7 +40,7 @@ Future<void> main() async {
 
   final connectivityResult = await Connectivity().checkConnectivity();
   bool isConnected = (connectivityResult != ConnectivityResult.none);
-  
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageProvider()),
@@ -50,6 +50,7 @@ Future<void> main() async {
     ],
     child : MyApp(isFirstTime: isFirstTime, user: user, hasInternet:  isConnected,)));
 
+
 }
 
 class MyApp extends StatelessWidget {
@@ -57,6 +58,7 @@ class MyApp extends StatelessWidget {
   final User? user;
   final bool hasInternet;
   const MyApp({super.key,  required this.isFirstTime, required this.user, required this.hasInternet});
+
 
   static const String _title = 'Manga Vault';
 

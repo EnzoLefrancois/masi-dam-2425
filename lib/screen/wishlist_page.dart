@@ -34,15 +34,12 @@ class _WishlistPageState extends State<WishlistPage> {
   }
 
   Future<bool> _loadData() async {
-    try {
-      String userid = FirebaseAuth.instance.currentUser!.uid;
-      _userWishlist = await getUserWishlist(userid);
-      _friendWishlist = await getFriendWishlist();
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+    _userWishlist = await getUserWishlist(userid);
+    _friendWishlist = await getFriendWishlist();
 
-      return true;
-    } catch (_) {
-      return false;
-    }
+    return true;
+
   }
 
   final _singleChildController = ScrollController();
