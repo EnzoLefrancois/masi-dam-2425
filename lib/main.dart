@@ -13,6 +13,7 @@ import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:manga_library/screen/wishlist_page.dart';
 import 'list.dart';
 import './routes.dart';
 
@@ -80,7 +81,7 @@ class MyApp extends StatelessWidget {
           primaryColor: Colors.white
         ),
         themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-    
+
         locale: languageProvider.locale,
         localizationsDelegates: const [
           AppLocalizations.delegate,
@@ -88,19 +89,16 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [
-          Locale('en'), // English
-          Locale('fr'), // French
-        ],
+        supportedLocales: languageProvider.localList,
         routes: customRoutes,
-    
+
         debugShowCheckedModeBanner: false,
         title: _title,
         initialRoute: isFirstTime ? '/onboarding' :   user == null ? '/login' : '/',
         // initialRoute: '/onboarding'
     
       );
-    
+
   }
 }
 
@@ -120,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Liste des pages de l'application
   late Future<List<Widget>> _pages;
+  late List<Serie>  allSeries;
 
   @override
   void initState() {
@@ -129,19 +128,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Charger et parser le fichier CSV
   Future<List<Widget>> _loadData() async {
-    List<Serie> allSeries = await getAllSerieFromFirestore();
-    List<String> mangaTitles = allSeries.map((row) => row.name!).toList();
+    allSeries = await getAllSerieFromFirestore();
     String userid = FirebaseAuth.instance.currentUser!.uid;
     getUserWishlist(userid);
     getFriendWishlist();
 
     return [
-      const Center(
-          child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
+      WishlistPage(allSeries: allSeries),
       MyLibrarypage(allSeries: allSeries),
       MySearchPage(
-          titles: mangaTitles), // Passer la liste des titres à MySearchPage
-      Options()
+          allSeries: allSeries), // Passer la liste des titres à MySearchPage
+      const Options()
     ];
   }
 
@@ -218,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/isbn-scanner');
+          Navigator.pushNamed(context, '/isbn-scanner', arguments: allSeries);
         },
         tooltip: 'Scanner',
         child: const Icon(Icons.document_scanner_rounded),

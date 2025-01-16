@@ -6,6 +6,8 @@ class Tome {
   String? seriesName;
   String? summary;
   int? key;
+  int? serieId;
+
 
   Tome({
     this.tomeName,
@@ -14,7 +16,8 @@ class Tome {
     this.isbn13,
     this.seriesName,
     this.summary,
-    this.key
+    this.key,
+    this.serieId
   });
 
   int? extractVolumeNumber(String text) {
@@ -27,7 +30,7 @@ class Tome {
     return null; // Retourne null si aucun match trouvé
   }
 
-  Tome.fromJson(Map<String, dynamic> json, String seriesTitle, String keys) {
+  Tome.fromJson(Map<String, dynamic> json, String seriesTitle, String keys, int seriesId) {
     key = extractVolumeNumber(keys);
     tomeName = json['name'];
     cover = json['cover'];
@@ -35,5 +38,7 @@ class Tome {
     isbn13 = json['isbn_13'];
     seriesName = seriesTitle;
     summary = json['summary'];
+    serieId = seriesId;
+
   }
 }

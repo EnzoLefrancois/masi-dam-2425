@@ -49,6 +49,7 @@ dependencies:
   firebase_ui_auth: ^1.16.0
   shared_preferences: ^2.0.18
   package_info_plus: ^4.0.0
+  qr_flutter: ^4.1.0
   introduction_screen: ^3.1.14
 
 
@@ -83,11 +84,11 @@ flutter:
     - assets/mybooks.json
     - assets/images/splash.png
     - assets/images/no-internet-connection-icon.jpg
-    - assets/images/detail-tome.gif
-    - assets/images/wishlist.png
-    - assets/images/1.gif
-    - assets/images/2.gif
-    - assets/images/3.gif
+    - assets/images/owned_manga.gif
+    - assets/images/read.gif
+    - assets/images/scan_isbn.gif
+    - assets/images/search.gif
+    - assets/images/wishlist.gif
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

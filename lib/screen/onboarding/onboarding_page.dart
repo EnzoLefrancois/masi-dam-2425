@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:manga_library/screen/onboarding/onboaring_creator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class OnboardingScreen extends StatelessWidget {
+  const OnboardingScreen({super.key});
+
   @override
     Widget build(BuildContext context) {
     return SafeArea(
@@ -18,29 +22,44 @@ class OnboardingScreen extends StatelessWidget {
             ],
           ),
         ),
+
         child: IntroductionScreen(
-            // globalBackgroundColor: Colors.transparent,
             scrollPhysics: const BouncingScrollPhysics(),
             pages: [
-              OnboardingPageCreator.onboardingCreate(context,'Manga Vault',"L'application pour suivre l'évolution de votre mangathèque", 'assets/images/splash.png',2.5),
-              OnboardingPageCreator.onboardingCreate(context,'Ajouter un/des mangas',"Cliquer sur le bouton flottant et scanner le code barre de vos mangas", 'assets/images/1.gif',2),
-              OnboardingPageCreator.onboardingCreate(context,'Ajouter les wishlist de vos collègues',"Scanner le QR code de votre amis, et celle-ci serai ajoutée", 'assets/images/2.gif',2),
-              OnboardingPageCreator.onboardingCreate(context,'Visualiser vos mangas',"Visualiser les mangas que vous possèdez - Faites une recherche sur les mangas que vous possèder", 'assets/images/3.gif',2),
-              OnboardingPageCreator.onboardingCreate(context,'Chercher un manga particulier', 'Faites une recherche sur le manga que vous chercher, ajouter le a votre wishlist ou bien ajouter le a votre collection', 'assets/images/1.gif',2),
-              OnboardingPageCreator.onboardingCreate(context, 'Lectre en cours', 'Vous êtes en phase de lecture d\'un manga ? Indiquez le grâce au bouton PLAY\n Profitez de l\'application', 'assets/images/1.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,
+                  'Manga Vault',
+                  AppLocalizations.of(context)!.onboardingPageSubtitle1,
+                  'assets/images/splash.png',2.5),
+              OnboardingPageCreator.onboardingCreate(context,
+                  AppLocalizations.of(context)!.onboardingPageTitle2,
+                  AppLocalizations.of(context)!.onboardingPageSubtitle2,
+                  'assets/images/scan_isbn.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,
+                  AppLocalizations.of(context)!.onboardingPageTitle3,
+                  AppLocalizations.of(context)!.onboardingPageSubtitle3,
+                  'assets/images/wishlist.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,
+                  AppLocalizations.of(context)!.onboardingPageTitle4,
+                  AppLocalizations.of(context)!.onboardingPageSubtitle4,
+                  'assets/images/owned_manga.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,
+                  AppLocalizations.of(context)!.onboardingPageTitle5,
+                  AppLocalizations.of(context)!.onboardingPageSubtitle5,
+                  'assets/images/search.gif',2),
+              OnboardingPageCreator.onboardingCreate(context,
+                  AppLocalizations.of(context)!.onboardingPageTitle6,
+                  AppLocalizations.of(context)!.onboardingPageSubtitle6,
+                  'assets/images/read.gif',2),
 
             ],
             onDone: () async {
               goToHome(context);
             },
-            // onSkip: () async {
-            //   goToHome(context);
-            // },
-            // showSkipButton: true,
-            // skip: Text("Skip"),
             back: const Icon(Icons.arrow_back),
             next: const Icon(Icons.forward),
-            done: Text("Terminer", style: const TextStyle(fontWeight: FontWeight.w600)),
+            done: Text(
+                AppLocalizations.of(context)!.onboardingPageFinishButton,
+                style: const TextStyle(fontWeight: FontWeight.w600)),
             dotsDecorator: getDotDecorator(),
           ),
         ),
