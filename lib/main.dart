@@ -56,14 +56,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final languageProvider = Provider.of<LanguageProvider>(context);
+    final themeProvider = Provider.of<ThemeProvider>(context);
     if (user != null) {
       loadUserFromPreferences(context);
     }
-    final languageProvider = Provider.of<LanguageProvider>(context);
-    final themeProvider = Provider.of<ThemeProvider>(context);
 
     FirebaseAuth.instance
-        .setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
+        .setLanguageCode('fr');
 
     return MaterialApp(
         theme: ThemeData(
@@ -95,7 +95,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: _title,
         initialRoute: isFirstTime ? '/onboarding' :   user == null ? '/login' : '/',
-        // initialRoute: '/onboarding'
     
       );
 
@@ -129,9 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
   // Charger et parser le fichier CSV
   Future<List<Widget>> _loadData() async {
     allSeries = await getAllSerieFromFirestore();
-    String userid = FirebaseAuth.instance.currentUser!.uid;
-    getUserWishlist(userid);
-    getFriendWishlist();
 
     return [
       WishlistPage(allSeries: allSeries),
