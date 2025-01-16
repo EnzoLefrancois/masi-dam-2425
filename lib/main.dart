@@ -109,6 +109,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Liste des pages de l'application
   late Future<List<Widget>> _pages;
+  late List<Serie>  allSeries;
 
   @override
   void initState() {
@@ -118,7 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // Charger et parser le fichier CSV
   Future<List<Widget>> _loadData() async {
-    List<Serie> allSeries = await getAllSerieFromFirestore();
+    allSeries = await getAllSerieFromFirestore();
     String userid = FirebaseAuth.instance.currentUser!.uid;
     getUserWishlist(userid);
     getFriendWishlist();
@@ -206,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(context, '/isbn-scanner');
+          Navigator.pushNamed(context, '/isbn-scanner', arguments: allSeries);
         },
         tooltip: 'Scanner',
         child: const Icon(Icons.document_scanner_rounded),

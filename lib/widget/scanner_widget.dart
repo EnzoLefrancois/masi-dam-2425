@@ -34,6 +34,8 @@ class _ScannerWidgetState extends State<ScannerWidget> {
     super.initState();
   }
 
+
+
   @override
   void reassemble() {
     super.reassemble();
@@ -46,6 +48,7 @@ class _ScannerWidgetState extends State<ScannerWidget> {
 
   @override
   void dispose() {
+    controller?.stopCamera();
     controller?.dispose();
     super.dispose();
   }
@@ -70,7 +73,10 @@ class _ScannerWidgetState extends State<ScannerWidget> {
       );
 
   void onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
+    setState(() {
+      this.controller = controller;
+
+    });
     controller.scannedDataStream.listen((barcode) async {
       // Avoid scanning the same code in a loop
       if(this.barcode == null || this.barcode!.code != barcode.code) {

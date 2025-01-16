@@ -79,7 +79,7 @@ Future<List<Serie>> getAllSerieFromFirestore() async {
         mangaData.forEach((key, value) {
           if (key.startsWith('Vol')) {
             Map<String, dynamic> volumeData = value as Map<String, dynamic>;
-            Tome tome = Tome.fromJson(volumeData, mangaName, key);
+            Tome tome = Tome.fromJson(volumeData, mangaName, key, serie.serieId!);
             serie.addTome(tome);
           }
         });

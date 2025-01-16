@@ -1,9 +1,12 @@
+import 'dart:collection';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:manga_library/main.dart';
 import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/model/tome.dart';
+import 'package:manga_library/screen/add_tome_validation_page.dart';
 import 'package:manga_library/screen/login/login.dart';
 import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/screen/login/register_form.dart';
@@ -17,11 +20,24 @@ import 'screen/isbn_scanner.dart';
 var customRoutes = <String, WidgetBuilder>{
   '/': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const MyHomePage(title: "Manga Vault") ,
 
-  '/isbn-scanner': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const IsbnScannerScreen(),
+  '/isbn-scanner': (context) {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return LoginForm();
+    }
+    List<Serie> allSeries = ModalRoute.of(context)!.settings.arguments as List<Serie>;
+    return IsbnScannerScreen(allSeries: allSeries);
+  },
+
+  '/tome-validation': (context) {
+    if (FirebaseAuth.instance.currentUser == null) {
+      return LoginForm();
+    }
+    HashSet<Tome> addTome = ModalRoute.of(context)!.settings.arguments as HashSet<Tome>;
+    return AddTomeValidationPage(addTomes: addTome);
+  },
 
   '/series-details': (context) {
-    if (FirebaseAuth.instance.currentUser == null)
-    {
+    if (FirebaseAuth.instance.currentUser == null) {
       return LoginForm();
     }
     final Map<String, dynamic> args =
