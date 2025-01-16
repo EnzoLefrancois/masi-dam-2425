@@ -346,7 +346,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
                               height: 120,
                               fit: BoxFit.cover,
                               errorBuilder: (context, error, stackTrace) {
-                                return Image.asset('assets/images/no-internet-connection-icon.png',
+                                return Image.asset('assets/images/no-internet-connection-icon.jpg',
                                     width: 80,
                                     height: 120,
                                     fit: BoxFit.cover);
