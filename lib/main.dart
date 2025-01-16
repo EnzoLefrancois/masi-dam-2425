@@ -94,7 +94,6 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: _title,
         initialRoute: isFirstTime ? '/onboarding' :   user == null ? '/login' : '/',
-    
       );
 
   }

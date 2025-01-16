@@ -55,7 +55,6 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
           }
 
         }
-
     });
 
   }

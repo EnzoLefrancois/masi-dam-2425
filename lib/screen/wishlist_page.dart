@@ -12,7 +12,6 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../provider/user_provider.dart';
-
 class WishlistPage extends StatefulWidget {
   final List<Serie> allSeries;
   const WishlistPage({super.key, required this.allSeries});
@@ -38,7 +37,6 @@ class _WishlistPageState extends State<WishlistPage> {
     String userid = FirebaseAuth.instance.currentUser!.uid;
     _userWishlist = await getUserWishlist(userid);
     _friendWishlist = await getFriendWishlist();
-
 
     return true;
   }
