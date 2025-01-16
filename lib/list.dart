@@ -2,9 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/service/firestore_service.dart';
-import 'manga_search_delegate.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:http/http.dart' as http;
 
 class MySearchPage extends StatefulWidget {
   final List<Serie> allSeries;

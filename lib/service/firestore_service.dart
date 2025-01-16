@@ -253,7 +253,7 @@ Future<bool> addFriedWishlist(Map<String, dynamic> jsonData) async {
 
     int count = (await getUserWishlist(userid)).length;
     await FirebaseFirestore.instance
-        .collection('friend_whishlist') //todo
+        .collection('friend_whishlist')
         .doc(userid)
         .set({
       "$count": jsonData, //tdo

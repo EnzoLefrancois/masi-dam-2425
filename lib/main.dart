@@ -12,12 +12,12 @@ import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:manga_library/screen/wishlist_page.dart';
 import 'list.dart';
 import './routes.dart';
 
 import 'service/firestore_service.dart';
-import 'screen/options.dart';
 
 
 
@@ -26,6 +26,15 @@ Future<void> main() async {
   await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  bool isFirstTime = prefs.getBool('isFirstTime') ?? true;
+  User? user;
+  if (!isFirstTime) {
+    user = FirebaseAuth.instance.currentUser;
+    user?.reload();
+
+  }
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LanguageProvider()),
@@ -33,12 +42,14 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (_) => ThemeProvider()),
 
     ],
-    child : const MyApp()));
+    child : MyApp(isFirstTime: isFirstTime, user: user,)));
 
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isFirstTime;
+  final User? user;
+  const MyApp({super.key, required this.isFirstTime, required this.user});
 
   static const String _title = 'Manga Vault';
 
@@ -46,15 +57,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final languageProvider = Provider.of<LanguageProvider>(context);
     final themeProvider = Provider.of<ThemeProvider>(context);
-
-    FirebaseAuth.instance
-        .setLanguageCode('fr'); // Définir la langue sur "fr" pour le français
-
-    User? user = FirebaseAuth.instance.currentUser;
-    user?.reload();
     if (user != null) {
       loadUserFromPreferences(context);
     }
+
+    FirebaseAuth.instance
+        .setLanguageCode('fr');
+
     return MaterialApp(
         theme: ThemeData(
           brightness: Brightness.light,
@@ -79,16 +88,12 @@ class MyApp extends StatelessWidget {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        supportedLocales: const [
-          Locale('en'), // English
-          Locale('fr'), // French
-        ],
+        supportedLocales: languageProvider.localList,
         routes: customRoutes,
 
         debugShowCheckedModeBanner: false,
         title: _title,
-        initialRoute: user == null ? '/login' : '/',
-
+        initialRoute: isFirstTime ? '/onboarding' :   user == null ? '/login' : '/',
       );
 
   }
