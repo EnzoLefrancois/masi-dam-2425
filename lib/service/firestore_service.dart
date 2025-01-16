@@ -158,13 +158,13 @@ Future<List<FriendWishlist>> getFriendWishlist() async {
       List<FriendWishlist> friendwishlist = [];
       var friendData = userDoc.data();
 
-      friendData!.forEach((key, value) async {
+      for (var value in friendData!.values) {
         Map<String, dynamic> data = value as Map<String, dynamic>;
         FriendWishlist friend = FriendWishlist.fromJson(data);
         List<Wishlist> f_wish = await getUserWishlist(friend.friendUserId!);
         friend.wishlist = f_wish;
         friendwishlist.add(friend);
-      });
+      }
 
       return friendwishlist;
     } else {
@@ -186,6 +186,7 @@ Future<bool> addTomeToOwnedList(OwnedTome newOwnedTome) async {
         .set({
       newOwnedTome.isbn!: newTomeData,
     }, SetOptions(merge: true));
+    await removeTomeFromWishlist(newOwnedTome.isbn!);
     return true;
   } catch (e) {
     print('Erreur lors de l\'ajout du tome : $e');
@@ -230,6 +231,78 @@ Future<bool> updateTomeReadingStatus(String isbn, int newReadingStatus) async {
     return true;
   } catch (e) {
     print('Erreur lors de la mise à jour de readingStatus : $e');
+    return false;
+  }
+}
+
+Future<bool> addFriedWishlist(Map<String, dynamic> jsonData) async {
+  String userid = FirebaseAuth.instance.currentUser!.uid;
+  try {
+    final userDoc = await FirebaseFirestore.instance
+            .collection('friend_whishlist')
+            .doc(userid)
+            .get();
+
+    if (!userDoc.exists) {
+      await FirebaseFirestore.instance
+            .collection('friend_whishlist')
+            .doc(userid)
+            .set({});
+    }
+
+
+    int count = (await getUserWishlist(userid)).length;
+    await FirebaseFirestore.instance
+        .collection('friend_whishlist') //todo
+        .doc(userid)
+        .set({
+      "$count": jsonData, //tdo
+    } , SetOptions(merge: true));
+
+    return true;
+  } catch (e) {
+    print('Erreur lors de lajout de la  wl : $e');
+  }
+  return false;
+}
+
+Future<bool> addTomeToWishlist(Wishlist wish) async {
+  try {
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+    Map<String, dynamic> newWish = {
+      "isbn": wish.isbn,
+      "serie_id" : wish.serieId
+    };
+    await FirebaseFirestore.instance
+        .collection('user_whishlist')
+        .doc(userid)
+        .set({
+      '${wish.isbn}': newWish,
+    }, SetOptions(merge: true));
+    return true;
+  } catch (e) {
+    print('Erreur lors de l\'ajout du tome : $e');
+
+    return false;
+  }
+}
+
+Future<bool> removeTomeFromWishlist(String isbn) async {
+  try {
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+
+    // Supprime une clé spécifique
+    await FirebaseFirestore.instance
+        .collection('user_whishlist')
+        .doc(userid)
+        .update({
+      isbn: FieldValue.delete(),
+    });
+
+    print("Tome supprimé avec succès.");
+    return true;
+  } catch (e) {
+    print('Erreur lors de la suppression du tome : $e');
     return false;
   }
 }

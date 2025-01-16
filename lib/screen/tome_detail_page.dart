@@ -1,10 +1,12 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/model/tome.dart';
+import 'package:manga_library/model/whishlist.dart';
 import 'package:manga_library/service/firestore_service.dart';
 
 class TomeDetailPage extends StatefulWidget {
@@ -40,6 +42,21 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
     } else {
       _reading_status = 0;
     }
+    String userid = FirebaseAuth.instance.currentUser!.uid;
+
+    getUserWishlist(userid).then((wishlist) {
+        for (var wish in wishlist) {
+          bool iswish = wish.isbn == (widget.tome.isbn13 ?? widget.tome.isbn10);
+          if (iswish) {
+            setState(() {
+               _isWish = iswish;
+            });
+            break;
+          }
+
+        }
+       
+    });
 
   }
 
@@ -228,15 +245,48 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
         children: [
           if (!_isOwned)
             ElevatedButton.icon(
-              onPressed: () {
-                print("button pressed..");
+              onPressed: () async {
+                if (_isWish) {
+                  bool isRemove = await removeTomeFromWishlist(widget.tome.isbn13 ?? widget.tome.isbn10!);
+                  if (isRemove) {
+                    setState(() {
+                      _isWish =!_isWish;
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                "Une erreur s'est produite lors de la suppresion de la wish, veuillez ressayer")
+                        ),
+                      );
+                  }
+
+                } else {
+                  Wishlist wishlist = Wishlist(
+                    isbn: widget.tome.isbn13 ?? widget.tome.isbn10,
+                    serieId: widget.serie.serieId
+                  );
+                  bool isAdd = await addTomeToWishlist(wishlist);
+                  if (isAdd) {
+                    setState(() {
+                      _isWish =!_isWish;
+                    });
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text(
+                                "Une erreur s'est produite lors de l'ajout de la wish, veuillez ressayer")
+                        ),
+                      );
+                  }
+                }
               },
               icon: Icon(
-                _isWish ? Icons.favorite_border : Icons.favorite,
+                !_isWish ? Icons.favorite_border : Icons.favorite,
                 size: 20,
               ),
               label: Text(
-                _isWish ? AppLocalizations.of(context)!.detailTomeWish : AppLocalizations.of(context)!.detailTomeNotWish,
+                !_isWish ? AppLocalizations.of(context)!.detailTomeWish : AppLocalizations.of(context)!.detailTomeNotWish,
                 style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

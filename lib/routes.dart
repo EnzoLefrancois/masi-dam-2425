@@ -37,7 +37,8 @@ var customRoutes = <String, WidgetBuilder>{
   },
 
   '/series-details': (context) {
-    if (FirebaseAuth.instance.currentUser == null) {
+    if (FirebaseAuth.instance.currentUser == null)
+    {
       return LoginForm();
     }
     final Map<String, dynamic> args =

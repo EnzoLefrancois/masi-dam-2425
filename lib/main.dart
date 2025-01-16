@@ -12,6 +12,7 @@ import 'package:manga_library/screen/MyLibraryPage.dart';
 import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:provider/provider.dart';
+import 'package:manga_library/screen/wishlist_page.dart';
 import 'list.dart';
 import './routes.dart';
 
@@ -120,13 +121,9 @@ class _MyHomePageState extends State<MyHomePage> {
   // Charger et parser le fichier CSV
   Future<List<Widget>> _loadData() async {
     allSeries = await getAllSerieFromFirestore();
-    String userid = FirebaseAuth.instance.currentUser!.uid;
-    getUserWishlist(userid);
-    getFriendWishlist();
 
     return [
-      const Center(
-          child: Text("TODO : WISHLIST", style: TextStyle(fontSize: 30))),
+      WishlistPage(allSeries: allSeries),
       MyLibrarypage(allSeries: allSeries),
       MySearchPage(
           allSeries: allSeries), // Passer la liste des titres à MySearchPage

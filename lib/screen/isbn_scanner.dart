@@ -103,7 +103,7 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
     }
     if (tome != null) {
       setState(() {
-      _list.add(tome!);  
+      _list.add(tome!);
       });
 
     } else {
@@ -127,7 +127,7 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                                  
+
                     ElevatedButton(onPressed: () { Navigator.pop(context);}, child: const Text("Ok"))
                   ],
                 )
