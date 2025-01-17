@@ -83,7 +83,9 @@ class OnboardingScreen extends StatelessWidget {
   Future<void> goToHome(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isFirstTime', false);
-    Navigator.of(context).popAndPushNamed('/'); // Naviguer vers la page d'accueil
+    if (context.mounted) {
+      Navigator.of(context).popAndPushNamed('/'); // Naviguer vers la page d'accueil
+    }
   }
 
   PageDecoration getPageDecoration() => const PageDecoration(

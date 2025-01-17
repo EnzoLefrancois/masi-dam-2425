@@ -39,8 +39,9 @@ Future<void> loadUserFromPreferences(BuildContext context) async {
       image: image,
       id: id
     );
-
-    Provider.of<UserProvider>(context, listen: false).setUser(user);
+    if (context.mounted) {
+      Provider.of<UserProvider>(context, listen: false).setUser(user);
+    }
   }
 }
 

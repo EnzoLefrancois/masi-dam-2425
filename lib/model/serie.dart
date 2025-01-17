@@ -10,7 +10,7 @@ class Serie {
   List<Tome>? tomes = [];
 
   int nbOwnedTomes = 0;
-  int reading_status = 0;
+  int readingStatus = 0;
 
   Serie(
       {this.name,

@@ -54,7 +54,7 @@ class _WishlistPageState extends State<WishlistPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Liste de souhait", style: const TextStyle(
+                const Text("Liste de souhait", style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),),
@@ -81,22 +81,28 @@ class _WishlistPageState extends State<WishlistPage> {
                                             bool isAdded = await addFriedWishlist(decodedData);
                                             if (isAdded) {
                                               String? friendName = decodedData['friend_name'];
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                              SnackBar(
-                                                  content: Text(
-                                                      'Wishlist de ${friendName} ajouté avec succès')),
-                                              ) ;
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  SnackBar(
+                                                      content: Text(
+                                                          'Wishlist de $friendName ajouté avec succès')),
+                                                  ) ;
+                                              }
                                               _friendWishlist = await getFriendWishlist();
                                               setState(() {
                                               });
                                             } else {
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      'Wishlist non ajouté'))
-                                              ) ;
+                                              if (context.mounted) {
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text(
+                                                          'Wishlist non ajouté'))
+                                                  ) ;
+                                              }
                                             }
-                                            Navigator.pop(context);                       
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                            }
                                           } ,
                                         )     
                                       );
@@ -107,7 +113,7 @@ class _WishlistPageState extends State<WishlistPage> {
 
                         
                       },  
-                      icon: Icon(Icons.barcode_reader),),
+                      icon: const Icon(Icons.barcode_reader),),
                       IconButton(
                         onPressed: () async {
                           User? user = FirebaseAuth.instance.currentUser;
@@ -142,7 +148,7 @@ class _WishlistPageState extends State<WishlistPage> {
                                 );});
                           }
                         }, 
-                        icon: Icon(Icons.share)
+                        icon: const Icon(Icons.share)
                         ),
                   ],
                 ),
@@ -174,14 +180,14 @@ class _WishlistPageState extends State<WishlistPage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Ma wishlist",style: const TextStyle(
+          const Text("Ma wishlist",style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),),
           _userWishlist.isEmpty ?
           SizedBox(
             height: _friendWishlist.isNotEmpty ? 180 :  MediaQuery.of(context).size.height/1.7,
-            child: Center(child: Text("Pas de wishlist", 
+            child: const Center(child: Text("Pas de wishlist", 
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),)):
           SizedBox(
             height: _friendWishlist.isNotEmpty ? 180 :  MediaQuery.of(context).size.height/1.7,
@@ -213,7 +219,8 @@ class _WishlistPageState extends State<WishlistPage> {
       onTap: () async {
           MyBooks allOwnedTome = await getUsersAllOwnedBooks();
           List<OwnedTome> ownedTome = allOwnedTome.books!;
-          Navigator.pushNamed(context, "/tome-details", arguments: {
+          if (context.mounted) {
+            Navigator.pushNamed(context, "/tome-details", arguments: {
             'tome': tome,
             'serie': serie,
             'ownedTomes': ownedTome
@@ -224,6 +231,7 @@ class _WishlistPageState extends State<WishlistPage> {
             setState(() {
             
           });});
+          }
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -245,7 +253,7 @@ class _WishlistPageState extends State<WishlistPage> {
             child: ListView.builder(
               itemCount: _friendWishlist.length,
               shrinkWrap: true, 
-              physics: NeverScrollableScrollPhysics(), 
+              physics: const NeverScrollableScrollPhysics(), 
               itemBuilder: (_, index) {
                 List<Wishlist> wishlist = _friendWishlist[index].wishlist;
                 String? friendName = _friendWishlist[index].friendName;

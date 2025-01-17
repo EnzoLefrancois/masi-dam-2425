@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/model/error_firebase_auth.dart';
 import 'package:manga_library/model/user_model.dart';
 import 'package:manga_library/provider/user_provider.dart';
-import 'package:manga_library/routes.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:manga_library/service/firestore_service.dart';
 
@@ -13,7 +12,7 @@ import 'package:provider/provider.dart';
 
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key}) : super(key: key);
+  const RegisterForm({super.key});
 
   @override
   State<RegisterForm> createState() => _RegisterFormState();
@@ -89,7 +88,8 @@ class _RegisterFormState extends State<RegisterForm> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return AppLocalizations.of(context)!.registerPageEmptyFirstName;
-                              } 
+                              }
+                              return null; 
                             },
                             onChanged: (value) {
                               _firstname = value;
@@ -112,7 +112,8 @@ class _RegisterFormState extends State<RegisterForm> {
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return AppLocalizations.of(context)!.registerPageEmptyName;
-                              } 
+                              }
+                              return null; 
                             },
                             onChanged: (value) {
                               _lastname = value;
@@ -138,6 +139,7 @@ class _RegisterFormState extends State<RegisterForm> {
                               } else if (!EmailValidator.validate(value)) {
                                 return AppLocalizations.of(context)!.loginPageMail2;
                               }
+                              return null;
                             },
                             onChanged: (value) {
                               _email = value;
@@ -166,6 +168,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                 } else if (value.length < 8) {
                                   return AppLocalizations.of(context)!.loginPagePassword2;
                                 }
+                                return null;
                               },
                               onChanged: (value) {
                                 _password = value;
@@ -207,18 +210,25 @@ class _RegisterFormState extends State<RegisterForm> {
                                     .then((value) async {
                                   await createUserCollection();
                                   await saveUserToFirestore(_firstname,_lastname,"https://st2.depositphotos.com/3758943/6040/i/450/depositphotos_60400977-stock-photo-sleeping-on-your-desktop.jpg");
-                                  ScaffoldMessenger.of(context).showSnackBar(
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(
                                             'Bonjour ${FirebaseAuth.instance.currentUser!.email}')),
                                   );
+                                  }
                                   UserModel? userModel = await getUserDetailsFromFirebase();
                                   await saveUserToPreferences(userModel!);
-                                  Provider.of<UserProvider>(context, listen: false).setUser(userModel);
-                                  Navigator.popAndPushNamed(context, '/');
+                                  if (context.mounted) {
+                                    Provider.of<UserProvider>(
+                                        context, listen: false).setUser(
+                                        userModel);
+                                    Navigator.popAndPushNamed(context, '/');
+                                  }
                                 });
                               } on FirebaseAuthException catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                       content: Text(
                                         errors[e.code]!,
@@ -226,6 +236,7 @@ class _RegisterFormState extends State<RegisterForm> {
                                       ),
                                       backgroundColor: Colors.redAccent),
                                 );
+                                }
                               }
                             }
                           }),

@@ -49,13 +49,15 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
                       Navigator.pushNamed(context, '/tome-validation', arguments:  _list,).then((_) {
                         setState(() {
                         });
-                        Navigator.pop(context);
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                        }
                       });
                     },
-                    label: Text("Ajouter"),
-                    icon: Icon(Icons.add),
+                    label: const Text("Ajouter"),
+                    icon: const Icon(Icons.add),
                   ),
-                  SizedBox(height: 10), // Espacement entre le bouton et la liste
+                  const SizedBox(height: 10), // Espacement entre le bouton et la liste
                   // Liste horizontale des éléments
                   Expanded(
                     child: ListView.builder(
@@ -83,7 +85,6 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
   }
 
   Future<void> onScan(Barcode barcode) async {
-    print("code + " + barcode.code!);
     String barcodeString = barcode.code!;
     barcodeString = barcodeString.trim().replaceAll("-", "");
     bool is13 = barcodeString.length == 13;

@@ -1,4 +1,5 @@
 const Map<String, String> errors = {
+  'invalid-credential': "Identifiants non valides",
   'invalid-email': 'L’email n’est pas valide.',
   'user-disabled': 'Votre compte est désactivé.',
   'user-not-found': 'Cet email n’est pas connu.',

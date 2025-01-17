@@ -4,14 +4,13 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/provider/language_provider.dart';
 import 'package:manga_library/provider/theme_provider.dart';
 import 'package:manga_library/provider/user_provider.dart';
-import 'package:manga_library/screen/MyLibraryPage.dart';
+import 'package:manga_library/screen/my_library_page.dart';
 import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +24,6 @@ import 'service/firestore_service.dart';
 
 
 Future<void> main() async {
-  // Charger le fichier .env
-  await dotenv.load(fileName: ".env");
   WidgetsFlutterBinding.ensureInitialized(); // Nécessaire pour les appels async dans `main`
   await Firebase.initializeApp(); // Initialisation de Firebase
   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -139,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return [
       WishlistPage(allSeries: allSeries),
-      MyLibrarypage(allSeries: allSeries),
+      MyLibraryPage(allSeries: allSeries),
       MySearchPage(
           allSeries: allSeries), // Passer la liste des titres à MySearchPage
       const Options()

@@ -14,8 +14,8 @@ class AddTomeValidationPage extends StatefulWidget {
 }
 
 class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
-  Map<int, bool> _isSelected = {};
-  Map<String, bool> _isOwned = {};
+  final Map<int, bool> _isSelected = {};
+  final Map<String, bool> _isOwned = {};
 
 
   @override
@@ -97,11 +97,11 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
                                   children: [
                                     Text(
                                       widget.addTomes.elementAt(index).seriesName!,
-                                      style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
+                                      style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16)
                                     ),
                                     Text(
                                       widget.addTomes.elementAt(index).tomeName!,
-                                      style: TextStyle(fontWeight: FontWeight.w500, fontSize: 12)
+                                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12)
                                     ),
                                   ],
                                 ),
@@ -120,7 +120,7 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
                                   borderRadius: BorderRadius.circular(20),
                                   color: Theme.of(context).colorScheme.inversePrimary,
                                 ),
-                                child: Icon(
+                                child: const Icon(
                                   Icons.check,
                                   size: 24,
                                 ),
@@ -129,10 +129,10 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
                                     width: 40,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      color: owned ? Color.fromARGB(255, 99, 95, 95) : Color(0xFFF5F5F5),
+                                      color: owned ? const Color.fromARGB(255, 99, 95, 95) : const Color(0xFFF5F5F5),
                                       borderRadius: BorderRadius.circular(20),
                                     ),
-                                    child: Icon(
+                                    child: const Icon(
                                       Icons.add,
                                       size: 24,
                                     ),
@@ -141,7 +141,7 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
                               
                             ],
                           ),
-                          if (owned) Text("Vous le posseder déjà !!!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)
+                          if (owned) const Text("Vous le posseder déjà !!!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)
                         ],
                       ),
                               
@@ -159,22 +159,26 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
                     selectedTome.add(widget.addTomes.elementAt(key_));
                   }
                 }
+
                 for (var tome in selectedTome) {
                   OwnedTome ownedTome = OwnedTome(isbn: tome.isbn13, readingStatus: 0, serieId: tome.serieId);
 
                   bool add = await addTomeToOwnedList(ownedTome);
                   if (add) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(
-                              "${ownedTome.isbn} ajouté avec sucès")
-                      ),
-                    );
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("${ownedTome.isbn} ajouté avec sucès")
+                        ),
+                        );
+                    }
                   }
                 }
-                Navigator.pop(context);
+                if (context.mounted) {
+                  Navigator.pop(context);
+                }
               }, 
-              child: Text("Ajouter")))
+              child: const Text("Ajouter")))
         ],
       )
       
