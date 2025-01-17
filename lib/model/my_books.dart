@@ -1,4 +1,3 @@
-import 'package:manga_library/model/tome.dart';
 
 class OwnedTome {
   String? isbn;

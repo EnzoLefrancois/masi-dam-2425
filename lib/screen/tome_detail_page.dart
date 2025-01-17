@@ -22,7 +22,7 @@ class TomeDetailPage extends StatefulWidget {
 //readingStatus empty
 class _TomeDetailPageState extends State<TomeDetailPage> {
   late bool _isOwned;
-  late int _reading_status;
+  late int _readingStatus;
   bool _isWish = false;
   bool _loadingOwn = false;
 
@@ -35,12 +35,12 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
       return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
     });
     if (_isOwned) {
-      _reading_status = widget.ownedTome.firstWhere((tome) {
+      _readingStatus = widget.ownedTome.firstWhere((tome) {
         bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
         return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
       }).readingStatus!;
     } else {
-      _reading_status = 0;
+      _readingStatus = 0;
     }
     String userid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -108,7 +108,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                     fontSize: 22,
                     color: Colors.grey),
               ),
-              if (_reading_status == 1)
+              if (_readingStatus == 1)
                 Text(
                   AppLocalizations.of(context)!.currentlyReading,
                   style: TextStyle(
@@ -183,7 +183,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(
             AppLocalizations.of(context)!.detailTomeSummary,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 18, color: Colors.black),
           ),
           const SizedBox(
@@ -191,7 +191,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
           ),
           Text(
             widget.tome.summary ?? AppLocalizations.of(context)!.detailTomeNoSummary,
-            style: TextStyle(color: Colors.black),
+            style: const TextStyle(color: Colors.black),
           ),
         ]),
       ),
@@ -252,12 +252,14 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                       _isWish =!_isWish;
                     });
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text(
                                 "Une erreur s'est produite lors de la suppresion de la wish, veuillez ressayer")
                         ),
                       );
+                    }
                   }
 
                 } else {
@@ -271,12 +273,14 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                       _isWish =!_isWish;
                     });
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    if (context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text(
                                 "Une erreur s'est produite lors de l'ajout de la wish, veuillez ressayer")
                         ),
                       );
+                    }
                   }
                 }
               },
@@ -304,7 +308,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
               width: 12,
             ),
           _loadingOwn ?
-              CircularProgressIndicator()
+              const CircularProgressIndicator()
           : ElevatedButton.icon(
             onPressed: () async {
               setState(() {
@@ -386,7 +390,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                   bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
                   return  is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10;
                 });
-                var newStatus = _reading_status == 0 ? 1 : 0;
+                var newStatus = _readingStatus == 0 ? 1 : 0;
 
                 bool isUpdate = await updateTomeReadingStatus(ownedTome.isbn!, newStatus);
                 setState(() {
@@ -394,8 +398,8 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
                     for (var tome in widget.ownedTome) {
                       bool is13 = tome.isbn!.trim().replaceAll("-", "").length == 13;
                       if (is13 ? tome.isbn == widget.tome.isbn13 : tome.isbn == widget.tome.isbn10){
-                        _reading_status =newStatus;
-                        tome.readingStatus = _reading_status;
+                        _readingStatus =newStatus;
+                        tome.readingStatus = _readingStatus;
                         break;
                       }
                     }
@@ -411,7 +415,7 @@ class _TomeDetailPageState extends State<TomeDetailPage> {
 
               },
               icon: Icon(
-                _reading_status == 1
+                _readingStatus == 1
                     ? Icons.pause
                     : Icons.play_arrow,
                 size: 20,

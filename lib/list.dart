@@ -47,9 +47,9 @@ class _MySearchPageState extends State<MySearchPage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: "chercher",
-                border: const OutlineInputBorder(),
+                border: OutlineInputBorder(),
               ),
               onChanged: _filterTitles, // Filtrer les titres lors de la saisie
             ),
@@ -65,10 +65,13 @@ class _MySearchPageState extends State<MySearchPage> {
                     // Action lors du clic sur un titre (par exemple, afficher plus de détails)
                     Serie s = widget.allSeries.firstWhere((serie) => serie.name! == filteredTitles[index]);
                     MyBooks myBooks = await getUsersAllOwnedBooks();
-                    Navigator.pushNamed(context, '/series-details', arguments: {
-                      "serie" : s,
-                      "ownedTomes" : myBooks.books!
-                    });
+                    if (context.mounted) {
+                      Navigator.pushNamed(
+                          context, '/series-details', arguments: {
+                        "serie": s,
+                        "ownedTomes": myBooks.books!
+                      });
+                    }
                   },
                 );
               },

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class NoInternetPage extends StatelessWidget {
 
-  const NoInternetPage({Key? key,}) : super(key: key);
+  const NoInternetPage({super.key,});
 
   @override
   Widget build(BuildContext context) {
@@ -12,9 +12,9 @@ class NoInternetPage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.wifi_off, size: 100, color: Colors.grey),
+            const Icon(Icons.wifi_off, size: 100, color: Colors.grey),
             const SizedBox(height: 20),
-            Text(
+            const Text(
               "Pas de connexion Internet",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
@@ -25,10 +25,12 @@ class NoInternetPage extends StatelessWidget {
                 bool isConnected = (connectivityResult != ConnectivityResult.none);
 
                 if (isConnected) {
-                  Navigator.popAndPushNamed(context, "/");
+                  if (context.mounted) {
+                    Navigator.popAndPushNamed(context, "/");
+                  }
                 }
               },
-              child: Text("Réessayer"),
+              child: const Text("Réessayer"),
             ),
           ],
         ),

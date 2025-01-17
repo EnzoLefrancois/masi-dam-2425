@@ -1,12 +1,8 @@
 import 'package:manga_library/provider/language_provider.dart';
 import 'package:manga_library/provider/theme_provider.dart';
 import 'package:manga_library/provider/user_provider.dart';
-import 'package:manga_library/screen/login/login.dart';
-import 'package:manga_library/main.dart';
-import 'package:manga_library/routes.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';

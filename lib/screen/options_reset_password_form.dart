@@ -4,10 +4,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class ChangePasswordPage extends StatefulWidget {
-  const ChangePasswordPage({Key? key}) : super(key: key);
+  const ChangePasswordPage({super.key});
 
   @override
-  _ChangePasswordPageState createState() => _ChangePasswordPageState();
+  State<ChangePasswordPage> createState() => _ChangePasswordPageState();
 }
 
 class _ChangePasswordPageState extends State<ChangePasswordPage> {
@@ -25,18 +25,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  Future<void> _changePassword() async {
+  Future<void> _changePassword(BuildContext context) async {
+
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
 
       try {
-        // Récupérer l'utilisateur actuel
         User? user = FirebaseAuth.instance.currentUser;
 
         if (user != null) {
-          // Authentifier avec l'ancien mot de passe si nécessaire
           String email = user.email!;
           String currentPassword = _currentPasswordController.text;
 
@@ -45,33 +44,37 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             password: currentPassword,
           );
 
-          // Re-authentifier l'utilisateur
           await user.reauthenticateWithCredential(credential);
 
-          // Vérifier et mettre à jour le nouveau mot de passe
           String newPassword = _newPasswordController.text;
           await user.updatePassword(newPassword);
+          if(context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                    AppLocalizations.of(context)!.changePasswordPageSuccess),
+                backgroundColor: Colors.green,
+              ),
+            );
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(AppLocalizations.of(context)!.changePasswordPageSuccess),
-              backgroundColor: Colors.green,
-            ),
-          );
-          Navigator.pop(context);
+            Navigator.pop(context);
+          }
         } else {
           throw Exception(AppLocalizations.of(context)!.changePasswordPageUserNotFound);
         }
       } on FirebaseAuthException catch (e) {
-        String errorMessage = AppLocalizations.of(context)!.changePasswordError1;
-        if (e.code == 'invalid-credential') {
-          errorMessage = AppLocalizations.of(context)!.changePasswordError2;
-        } else if (e.code == 'weak-password') {
-          errorMessage = AppLocalizations.of(context)!.changePasswordError3;
+        if(context.mounted) {
+          String errorMessage = AppLocalizations.of(context)!
+              .changePasswordError1;
+          if (e.code == 'invalid-credential') {
+            errorMessage = AppLocalizations.of(context)!.changePasswordError2;
+          } else if (e.code == 'weak-password') {
+            errorMessage = AppLocalizations.of(context)!.changePasswordError3;
+          }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+          );
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
-        );
       } finally {
         setState(() {
           _isLoading = false;
@@ -191,7 +194,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                             _isLoading
                                 ? const Center(child: CircularProgressIndicator())
                                 : ElevatedButton(
-                                    onPressed: _changePassword,
+                                    onPressed: () async {
+                                      await _changePassword(context);
+                                    },
                                     child: Text(AppLocalizations.of(context)!.changePasswordPageButton),
                                   ),
                           ],

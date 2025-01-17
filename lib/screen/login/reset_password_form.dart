@@ -1,14 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:manga_library/routes.dart';
 import 'package:email_validator/email_validator.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class ResetPasswordForm extends StatefulWidget {
-  const ResetPasswordForm({Key? key}) : super(key: key);
+  const ResetPasswordForm({super.key});
 
   @override
   State<ResetPasswordForm> createState() => _ResetPasswordFormState();
@@ -16,7 +15,6 @@ class ResetPasswordForm extends StatefulWidget {
 
 class _ResetPasswordFormState extends State<ResetPasswordForm> {
   final _resetPasswordFormKey = GlobalKey<FormState>();
-  final _textControllerEmail = TextEditingController();
   late String _email;
   String _textEnvoye = "";
 
@@ -92,6 +90,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
                               } else if (!EmailValidator.validate(value)) {
                                 return AppLocalizations.of(context)!.loginPageMail2;
                               }
+                              return null;
                             },
                           )
                           ]
@@ -146,10 +145,7 @@ class _ResetPasswordFormState extends State<ResetPasswordForm> {
   Future<void> sendPasswordResetEmail() async {
     try {
       await FirebaseAuth.instance.sendPasswordResetEmail(email: _email);
-      // Affichage d'un message de réussite
-    } on PlatformException catch (e) {
-      // Affichage d'un message d'erreur
-      print(e.message);
+    } on PlatformException catch (_) {
     }
   }
 

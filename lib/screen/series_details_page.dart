@@ -308,7 +308,6 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: InkWell(
               onTap: () {
-                print(title);
                 Navigator.pushNamed(
                   context,
                   '/tome-details',
@@ -405,17 +404,7 @@ class _SeriesDetailsPageState extends State<SeriesDetailsPage> {
           Navigator.of(context).pop();
         },
       ),
-      actions: [
-        IconButton(
-          icon: const Icon(
-            Icons.share,
-            size: 24,
-          ),
-          onPressed: () {
-            print('share pressed ...');
-          },
-        ),
-      ],
+
     );
   }
 }

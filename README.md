@@ -2,13 +2,12 @@
 
 ## 📁 Présentation des Principaux Dossiers
 
-> Une présentation des principaux dossiers de votre dépôt. Quelles sont les différentes ressources qu'il contient à la racine ? Par exemple, les maquettes, vos inspirations, etc. Si vous avez fait des efforts quant à l'organisation de vos fichiers dans le dossier `lib`, expliquez-les ici.
-
 
 Voici la structure des principaux dossiers et fichiers de ce projet :
 
 - **assets/image** : Contient les images utilisées dans l'application.
 - **lib/l10n** : Contient les fichiers de traduction (`app_en.arb`, `app_fr.arb`).
+- **lib/provider**: Contient les différents provider (langue, theme et utilisateur).
 - **lib/model** : Contient les modèles utilisés dans l'application (`my_books`, `serie`, `tome`, `wishlist`).
 - **lib/screen** : Contient les différents écrans de l'application (`login`, `isbn_scanner`, `mylibrarypage`, `options`, `series_details_page`, `tome_detail_page`).
 - **lib/service** : Contient les services utilisés dans l'application, comme `firestore_service`.
@@ -17,8 +16,6 @@ Voici la structure des principaux dossiers et fichiers de ce projet :
 - **main.dart** : Le point d'entrée principal de l'application.
 
 ## 🚀 Présentation de l'Application
-
-> Une présentation de votre application. Ce dernier répond à un besoin, présentez-le. Ne faites aucune hypothèse sur le niveau de connaissances de votre lecteur. Vous vous adressez ici à un internaute quelconque qui découvre votre dépôt. Évitez un jargon technique dans cette partie de votre présentation.
 
 **MangaCollect** est une application qui permet de gérer une bibliothèque de mangas personnelle. Elle offre des fonctionnalités telles que :
 
@@ -29,8 +26,6 @@ Voici la structure des principaux dossiers et fichiers de ce projet :
 - Suivre l'évolution de vos lectures de mangas.
 
 ## 🌐 Étude de l'Existant
-
-> Une brève étude de l'existant. L'idée étant de savoir si d'autres ont déjà couvert le besoin auquel vous essayez de répondre. Ce qui est demandé ici, au-delà d'une brève description, ce sont les points forts et les points faibles de ces différentes applications. Il peut être intéressant de faire un tableau pour mettre en regard les avantages et les inconvénients. Enfin, mettez des captures d'écran des applications afin que l'on comprenne mieux de quoi on parle.
 
 
 Il existe plusieurs applications permettant de gérer des collections de livres, mais peu d'entre elles se concentrent spécifiquement sur les mangas. Certaines applications généralistes permettent de gérer des bibliothèques, mais elles ne proposent pas toutes des fonctionnalités avancées comme la recherche via ISBN, le partage de wishlist, ou la gestion des mangas spécifiquement.
@@ -57,12 +52,14 @@ L'application est destinée aux **amateurs de mangas** souhaitant organiser, sui
 
 Voici les principales fonctionnalités de l'application, présentées sous forme de récits utilisateurs (user stories) :
 
+- **Onboarding**: En tant qu'utilisateur, je voudrais avoir des écrans d'informations lors du premier démarrage afin de savoir comment utiliser l'application.
 - **Scanner un ISBN** : En tant qu'utilisateur, je veux scanner un ISBN afin d'ajouter un manga à ma collection.
 - **Partager la wishlist** : En tant qu'utilisateur, je veux partager ma wishlist pour que mes amis voient mes souhaits.
 - **Barre de recherche** : En tant qu'utilisateur, je veux chercher un manga afin de voir sa fiche.
 - **Suivre l’évolution d’un manga** : En tant qu'utilisateur, je veux marquer que je suis en lecture d’un manga afin de suivre son évolution.
 - **Connexion utilisateur** : En tant qu'utilisateur, je souhaite me connecter afin d'utiliser l'application.
 - **Création de compte** : En tant qu'utilisateur, je souhaite me créer un compte.
+- **Modifier mon mot de passe** : En tant qu'utilisateur, je souhaite modifier mon mot de passe via l'application.
 - **Afficher les mangas possédés** : En tant qu'utilisateur, je veux voir tous les mangas que je possède.
 - **Voir les détails d’un tome** : En tant qu'utilisateur, je veux voir en détail un tome.
 - **Classer par série** : En tant qu'utilisateur, je veux classer mes mangas par série pour mieux m’y retrouver.
@@ -70,13 +67,11 @@ Voici les principales fonctionnalités de l'application, présentées sous forme
 
 ## 📈 État d'Avancement
 
->  Un état d'avancement pour chaque fonctionnalité de votre application. Ceci doit évidemment être mis à jour régulièrement. Dès lors que vous aurez terminé de programmer une fonctionnalité, ajoutez dans le document `README.md` un `.gif` qui l'illustre. Vous pouvez vous servir de [GIF Brewery](https://apps.apple.com/us/app/gif-brewery-3-by-gfycat/id1081413713?mt=12) (Si vous êtes sous macOS) ou de [Gyazo](https://gyazo.com) (Si vous êtes sous Windows).
-
 
 | Fonctionnalité                     | Statut       | Description                          | Illustration|
 |-------------------------------------|--------------|--------------------------------------|------------|
-| Scanner un ISBN                    | En cours     | Fonctionnalité de scan d'ISBN.       |![Écran de scan](readme-asset/)|
-| Partager la wishlist                | En cours     | Permet le partage de la wishlist.   |![Écran de partage wishlist](readme-asset/)|
+| Scanner un ISBN                    | Terminé     | Fonctionnalité de scan d'ISBN.       |![Écran de scan](readme-asset/scan_isbn.gif)|
+| Partager la wishlist                | Terminé     | Permet le partage de la wishlist.   |![Écran de partage wishlist](readme-asset/wishlist.gif)|
 | Barre de recherche                  | Terminé      | Permet de rechercher un manga.      |![Écran de recherche](readme-asset/search.gif)|
 | Suivre l’évolution d’un manga      | Terminé      | Marquer un manga comme en cours de lecture. |![Écran de reading status](readme-asset/evolution.gif)|
 | Connexion utilisateur               | Terminé      | Authentification par email/mot de passe. |![Écran de connexion](readme-asset/login.gif)|

@@ -10,7 +10,6 @@ import 'package:manga_library/screen/add_tome_validation_page.dart';
 import 'package:manga_library/screen/login/login.dart';
 import 'package:manga_library/screen/onboarding/onboarding_page.dart';
 import 'package:manga_library/screen/no_internet_page.dart';
-import 'package:manga_library/screen/options.dart';
 import 'package:manga_library/screen/login/register_form.dart';
 import 'package:manga_library/screen/login/reset_password_form.dart';
 import 'package:manga_library/screen/options_reset_password_form.dart';
@@ -20,13 +19,13 @@ import 'package:manga_library/screen/tome_detail_page.dart';
 import 'screen/isbn_scanner.dart';
 
 var customRoutes = <String, WidgetBuilder>{
-  '/onboarding' : (context) => OnboardingScreen(),
-  '/no-internet' : (context) => NoInternetPage(),
-  '/': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const MyHomePage(title: "Manga Vault") ,
+  '/onboarding' : (context) => const OnboardingScreen(),
+  '/no-internet' : (context) => const NoInternetPage(),
+  '/': (context) => FirebaseAuth.instance.currentUser == null ? const LoginForm() : const MyHomePage(title: "Manga Vault") ,
 
   '/isbn-scanner': (context) {
     if (FirebaseAuth.instance.currentUser == null) {
-      return LoginForm();
+      return const LoginForm();
     }
     List<Serie> allSeries = ModalRoute.of(context)!.settings.arguments as List<Serie>;
     return IsbnScannerScreen(allSeries: allSeries);
@@ -34,7 +33,7 @@ var customRoutes = <String, WidgetBuilder>{
 
   '/tome-validation': (context) {
     if (FirebaseAuth.instance.currentUser == null) {
-      return LoginForm();
+      return const LoginForm();
     }
     HashSet<Tome> addTome = ModalRoute.of(context)!.settings.arguments as HashSet<Tome>;
     return AddTomeValidationPage(addTomes: addTome);
@@ -43,7 +42,7 @@ var customRoutes = <String, WidgetBuilder>{
   '/series-details': (context) {
     if (FirebaseAuth.instance.currentUser == null)
     {
-      return LoginForm();
+      return const LoginForm();
     }
     final Map<String, dynamic> args =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
@@ -57,7 +56,7 @@ var customRoutes = <String, WidgetBuilder>{
   '/tome-details': (context) {
     if (FirebaseAuth.instance.currentUser == null)
     {
-      return LoginForm();
+      return const LoginForm();
     }
     final arguments = ModalRoute.of(context)!.settings.arguments as Map;
     final tome = arguments['tome'] as Tome;
@@ -69,9 +68,9 @@ var customRoutes = <String, WidgetBuilder>{
       ownedTome : ownedTomes
     );
   },
-  '/login': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const MyHomePage(title: "Manga Vault"),
-  '/register': (context) => FirebaseAuth.instance.currentUser == null ? RegisterForm() : const MyHomePage(title: "Manga Vault"),
-  '/resetPassword': (context) => FirebaseAuth.instance.currentUser == null ? ResetPasswordForm() : const MyHomePage(title: "Manga Vault"),
-  '/change-password': (context) => FirebaseAuth.instance.currentUser == null ? LoginForm() : const ChangePasswordPage(),
+  '/login': (context) => FirebaseAuth.instance.currentUser == null ? const LoginForm() : const MyHomePage(title: "Manga Vault"),
+  '/register': (context) => FirebaseAuth.instance.currentUser == null ? const RegisterForm() : const MyHomePage(title: "Manga Vault"),
+  '/resetPassword': (context) => FirebaseAuth.instance.currentUser == null ? const ResetPasswordForm() : const MyHomePage(title: "Manga Vault"),
+  '/change-password': (context) => FirebaseAuth.instance.currentUser == null ? const LoginForm() : const ChangePasswordPage(),
 
 };

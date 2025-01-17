@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/model/error_firebase_auth.dart';
 import 'package:manga_library/model/user_model.dart';
 import 'package:manga_library/provider/user_provider.dart';
-import 'package:manga_library/routes.dart';
 import 'package:manga_library/service/firestore_service.dart';
 import 'package:manga_library/service/shared_pref_service.dart';
 import 'package:provider/provider.dart';
@@ -13,7 +12,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 
 class LoginForm extends StatefulWidget {
-  LoginForm({Key? key}) : super(key: key);
+  const LoginForm({super.key});
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -91,6 +90,7 @@ class _LoginFormState extends State<LoginForm> {
                                 } else if (!EmailValidator.validate(value)) {
                                   return AppLocalizations.of(context)!.loginPageMail2;
                                 }
+                                return null;
                               },
                               onChanged: (value) {
                                 _email = value;
@@ -119,6 +119,7 @@ class _LoginFormState extends State<LoginForm> {
                                   } else if (value.length < 8) {
                                     return AppLocalizations.of(context)!.loginPagePassword2;
                                   }
+                                  return null;
                                 },
                                 onChanged: (value) {
                               _password = value;
@@ -130,12 +131,12 @@ class _LoginFormState extends State<LoginForm> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           InkWell(
-                            child: Text(AppLocalizations.of(context)!.loginPageCreateAccount,style: TextStyle(color: Colors.blue)),
+                            child: Text(AppLocalizations.of(context)!.loginPageCreateAccount,style: const TextStyle(color: Colors.blue)),
                               onTap: () {
                                 Navigator.pushNamed(context, '/register');
                               }),
                           InkWell(
-                            child: Text(AppLocalizations.of(context)!.loginPagePasswordForgot,style: TextStyle(color: Colors.blue),),
+                            child: Text(AppLocalizations.of(context)!.loginPagePasswordForgot,style: const TextStyle(color: Colors.blue),),
                             onTap: () {
                               Navigator.pushNamed(context, '/resetPassword');
                             },
@@ -146,7 +147,7 @@ class _LoginFormState extends State<LoginForm> {
                         height: 20 * 2,
                       ),
                       ElevatedButton(
-                        child: Text(AppLocalizations.of(context)!.loginPageConnection,style: TextStyle(fontSize: 18)),
+                        child: Text(AppLocalizations.of(context)!.loginPageConnection,style: const TextStyle(fontSize: 18)),
                           onPressed: () async {
                             if (_loginFormKey.currentState != null &&
                                 _loginFormKey.currentState!.validate()) {
@@ -155,27 +156,35 @@ class _LoginFormState extends State<LoginForm> {
                                     .signInWithEmailAndPassword(
                                     email: _email, password: _password)
                                     .then((value) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            'Bonjour ${FirebaseAuth.instance.currentUser!.email}')),
-                                  );
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Bonjour ${FirebaseAuth.instance.currentUser!.email}')),
+                                    );
+                                  }
                                   
                                 });
                                 UserModel? userModel = await getUserDetailsFromFirebase();
                                 await saveUserToPreferences(userModel!);
-                                Provider.of<UserProvider>(context, listen: false).setUser(userModel);
-                                Navigator.popAndPushNamed(context, '/');
+                                if (context.mounted) {
+                                  Provider.of<UserProvider>(
+                                      context, listen: false).setUser(
+                                      userModel);
+                                  Navigator.popAndPushNamed(context, '/');
+                                }
                               } on FirebaseAuthException catch (e) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-              
-                                      content: Text(
-                                        errors[e.code]!,
-                                        style: TextStyle(color: Theme.of(context).primaryColor),
-                                      ),
-                                      backgroundColor: Colors.redAccent),
-                                );
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+
+                                        content: Text(
+                                          errors[e.code]!,
+                                          style: TextStyle(color: Theme.of(context).primaryColor),
+                                        ),
+                                        backgroundColor: Colors.redAccent),
+                                  );
+                                }
                               }
                             }
                           }),
