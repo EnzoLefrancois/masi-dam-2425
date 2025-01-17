@@ -33,7 +33,6 @@ Il existe plusieurs applications permettant de gérer des collections de livres,
 | Application     | Avantages                                                       | Inconvénients                                                   |
 |-----------------|-----------------------------------------------------------------|-----------------------------------------------------------------|
 | **Mangacollec**   | Planning personnalisé des sorties, wishlist| |
-| **Goodreads**   | Large base de données, communauté active, fonctionnalités de recherche | Pas spécifiquement orientée manga, interface parfois surchargée |
 | **MyAnimeList** | Base de données dédiée aux mangas et anime, interface claire   | Manque de certaines fonctionnalités comme le partage de wishlist |
 | **MangaDex**    | Plateforme dédiée aux mangas, ajout rapide de mangas           | Pas de gestion complète de collection                           |
 
