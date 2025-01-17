@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:manga_library/model/my_books.dart';
 import 'package:manga_library/model/serie.dart';
 import 'package:manga_library/service/firestore_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class MySearchPage extends StatefulWidget {
   final List<Serie> allSeries;
@@ -47,8 +49,8 @@ class _MySearchPageState extends State<MySearchPage> {
             padding: const EdgeInsets.all(8.0),
             child: TextField(
               controller: searchController,
-              decoration: const InputDecoration(
-                labelText: "chercher",
+              decoration:  InputDecoration(
+                labelText: AppLocalizations.of(context)!.searchListText,
                 border: OutlineInputBorder(),
               ),
               onChanged: _filterTitles, // Filtrer les titres lors de la saisie

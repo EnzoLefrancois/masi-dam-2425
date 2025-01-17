@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../provider/user_provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class WishlistPage extends StatefulWidget {
   final List<Serie> allSeries;
   const WishlistPage({super.key, required this.allSeries});
@@ -54,7 +56,7 @@ class _WishlistPageState extends State<WishlistPage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text("Liste de souhait", style: TextStyle(
+                Text(AppLocalizations.of(context)!.wishlistPageListWish, style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),),
@@ -180,14 +182,14 @@ class _WishlistPageState extends State<WishlistPage> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("Ma wishlist",style: TextStyle(
+          Text(AppLocalizations.of(context)!.wishlistPageMyWishTitle,style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),),
           _userWishlist.isEmpty ?
           SizedBox(
             height: _friendWishlist.isNotEmpty ? 180 :  MediaQuery.of(context).size.height/1.7,
-            child: const Center(child: Text("Pas de wishlist", 
+            child: Center(child: Text(AppLocalizations.of(context)!.wishlistPageNoContent,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),),)):
           SizedBox(
             height: _friendWishlist.isNotEmpty ? 180 :  MediaQuery.of(context).size.height/1.7,
@@ -263,7 +265,7 @@ class _WishlistPageState extends State<WishlistPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: Text(
-                        'Wishlist de $friendName!',
+                        '${AppLocalizations.of(context)!.wishlistPageFriendWish} $friendName!',
                         style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,

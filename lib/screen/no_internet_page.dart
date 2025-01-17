@@ -1,5 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 
 class NoInternetPage extends StatelessWidget {
 
@@ -14,8 +16,8 @@ class NoInternetPage extends StatelessWidget {
           children: [
             const Icon(Icons.wifi_off, size: 100, color: Colors.grey),
             const SizedBox(height: 20),
-            const Text(
-              "Pas de connexion Internet",
+            Text(
+              AppLocalizations.of(context)!.noInternetPageText,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 20),
@@ -30,7 +32,7 @@ class NoInternetPage extends StatelessWidget {
                   }
                 }
               },
-              child: const Text("Réessayer"),
+              child: Text(AppLocalizations.of(context)!.noInternetPageButton),
             ),
           ],
         ),

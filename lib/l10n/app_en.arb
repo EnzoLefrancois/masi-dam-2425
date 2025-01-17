@@ -80,5 +80,22 @@
     "onboardingPageSubtitle5": "Look up a manga, add it to your wishlist, or directly to your collection.",
     "onboardingPageTitle6": "Currently Reading",
     "onboardingPageSubtitle6": "Are you currently reading a manga? Indicate it using the PLAY button.\nEnjoy the app to its fullest!",
-    "onboardingPageFinishButton" : "Finish"
+    "onboardingPageFinishButton" : "Finish",
+
+    "addTomePageTitle": "Validate tome addition",
+    "addTomePageAlreadyOwned": "You already own it.",
+
+    "isbnScannerPageTitle": "Scan barcodes",
+    "isbnScannerPageAddLabel": "Add",
+    "isbnScannerPageMangaNotFound": "This manga is not yet listed in our database!",
+
+    "noInternetPageText": "No internet connection",
+    "noInternetPageButton": "Retry",
+
+    "wishlistPageListWish": "Wishlist",
+    "wishlistPageMyWishTitle": "My wishlist",
+    "wishlistPageNoContent": "No wishlist",
+    "wishlistPageFriendWish": "Wishlist of",
+
+    "searchListText": "Search"
 }

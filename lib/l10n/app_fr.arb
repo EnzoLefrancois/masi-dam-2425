@@ -80,5 +80,25 @@
     "onboardingPageSubtitle5": "Recherchez un manga, ajoutez-le à votre wishlist ou directement à votre collection.",
     "onboardingPageTitle6": "Lecture en cours",
     "onboardingPageSubtitle6": "Vous êtes en train de lire un manga ? Indiquez-le grâce au bouton PLAY.\nProfitez pleinement de l'application !",
-    "onboardingPageFinishButton" : "Terminer"
+    "onboardingPageFinishButton" : "Terminer",
+
+    "addTomePageTitle": "Validation de l'ajout du tome",
+    "addTomePageAlreadyOwned": "Vous le possédez déjà.",
+
+    "isbnScannerPageTitle": "Scanner les codes-barres",
+    "isbnScannerPageAddLabel": "Ajouter",
+    "isbnScannerPageMangaNotFound": "Ce manga n'est pas encore répertorié dans notre base de données !",
+
+    "noInternetPageText": "Pas de connexion internet",
+    "noInternetPageButton": "Réessayer",
+
+    "wishlistPageListWish": "Liste de souhaits",
+    "wishlistPageMyWishTitle": "Ma wishlist",
+    "wishlistPageNoContent": "Pas de wishlist",
+    "wishlistPageFriendWish": "Wishlist de",
+
+    "searchListText": "Chercher"
+
+
+
 }

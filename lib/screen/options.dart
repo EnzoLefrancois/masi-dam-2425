@@ -162,10 +162,10 @@ class Options extends StatelessWidget {
                         future: PackageInfo.fromPlatform(),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Text('Chargement...');
+                            return const Text('Loading...');
                           }
                           if (snapshot.hasError) {
-                            return const Text('Erreur de chargement');
+                            return const Text('Loading error');
                           }
                           final packageInfo = snapshot.data!;
                           return Text(

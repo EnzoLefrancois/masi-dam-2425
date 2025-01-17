@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:manga_library/model/my_books.dart';
@@ -47,7 +48,7 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add tome validation"),
+        title: Text(AppLocalizations.of(context)!.addTomePageTitle),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         automaticallyImplyLeading: false,
         leading: IconButton(
@@ -141,7 +142,8 @@ class _AddTomeValidationPageState extends State<AddTomeValidationPage> {
                               
                             ],
                           ),
-                          if (owned) const Text("Vous le posseder déjà !!!", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)
+                          if (owned)  Text(AppLocalizations.of(context)!.addTomePageAlreadyOwned
+                            , style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),)
                         ],
                       ),
                               

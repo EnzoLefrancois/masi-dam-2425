@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter/material.dart';
 import 'package:manga_library/model/serie.dart';
@@ -22,7 +23,7 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
 
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Scanner les code barre")),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.isbnScannerPageTitle)),
 
       body: Column(
         children: [
@@ -42,10 +43,6 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
                   if(_list.isNotEmpty)
                   ElevatedButton.icon(
                     onPressed: () {
-                      // _list.add(widget.allSeries.elementAt(0).tomes![0]);
-                      //                       _list.add(widget.allSeries.elementAt(0).tomes![2]);
-
-                      // Logique pour ajouter un élément
                       Navigator.pushNamed(context, '/tome-validation', arguments:  _list,).then((_) {
                         setState(() {
                         });
@@ -54,7 +51,7 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
                         }
                       });
                     },
-                    label: const Text("Ajouter"),
+                    label: Text(AppLocalizations.of(context)!.isbnScannerPageAddLabel),
                     icon: const Icon(Icons.add),
                   ),
                   const SizedBox(height: 10), // Espacement entre le bouton et la liste
@@ -113,13 +110,13 @@ class _IsbnScannerScreenState extends State<IsbnScannerScreen> {
           builder: (BuildContext alertCtx) {
             return SimpleDialog(
               children: <Widget>[
-                const Column(
+                Column(
 
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
                       padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
-                      child: Text("Ce manga n'est pas encore repertorié dans notre base de données!"),
+                      child: Text(AppLocalizations.of(context)!.isbnScannerPageMangaNotFound),
                     ),
                   ],
                 ),
